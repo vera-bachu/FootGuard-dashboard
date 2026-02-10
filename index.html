@@ -1,206 +1,654 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>FootGuard Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-:root {
-  --primary: #2ecc71;
-  --primary-dark: #27ae60;
-  --secondary: #3498db;
-  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-}
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-gradient);
-  margin:0;
-  padding:0;
-  color:#2c3e50;
-}
-header {
-  background:white;
-  padding:40px 20px;
-  text-align:center;
-  border-bottom:4px solid var(--primary);
-  box-shadow: var(--shadow);
-}
-header h1 { margin:0; font-size:2.5em; }
-header p { margin:5px 0 0; opacity:0.8; }
+    <meta charset="UTF-8" />
+    <title>FootGuard Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --fg-primary: #2ecc71;
+            --fg-primary-dark: #27ae60;
+            --fg-secondary: #3498db;
+            --fg-accent: #f39c12;
+            --fg-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --fg-card-bg: rgba(255, 255, 255, 0.96);
+            --fg-shadow-soft: 0 18px 45px rgba(31, 38, 135, 0.16);
+            --fg-radius-lg: 22px;
+            --fg-radius-md: 16px;
+            --fg-radius-pill: 999px;
+            --fg-text-main: #2c3e50;
+            --fg-text-soft: #6b7b8c;
+            --fg-border-subtle: rgba(0, 0, 0, 0.05);
+        }
 
-nav {
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:20px;
-  position:sticky;
-  top:0;
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(10px);
-  z-index:100;
-}
-nav button {
-  background:white;
-  border:1px solid #ddd;
-  padding:12px 25px;
-  border-radius:50px;
-  cursor:pointer;
-  font-weight:600;
-  transition:0.3s;
-}
-nav button.active {
-  background:var(--primary);
-  color:white;
-  border-color:var(--primary);
-}
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--fg-bg-gradient);
+            color: var(--fg-text-main);
+        }
 
-section {
-  display:none;
-  padding:40px;
-  max-width:1000px;
-  margin:30px auto;
-  background:var(--card-bg);
-  border-radius:20px;
-  box-shadow:var(--shadow);
-}
-section.active { display:block; }
+        .fg-root {
+            min-height: 100vh;
+        }
 
-h2 { border-left:5px solid var(--primary); padding-left:15px; margin-bottom:25px; }
+        .fg-header {
+            background: #ffffff;
+            padding: 32px 24px;
+            border-bottom: 4px solid var(--fg-primary);
+            box-shadow: var(--fg-shadow-soft);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
 
-.chart-container {
-  width:100%;
-  height:400px;
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
+        .fg-header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
 
-.connect-btn {
-  padding:15px 40px;
-  font-size:16px;
-  background:var(--primary);
-  color:white;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  margin:15px 0;
-}
-.connect-btn:hover { background:var(--primary-dark); }
+        .fg-header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
 
-.advice {
-  background:white;
-  padding:25px;
-  border-left:8px solid var(--secondary);
-  border-radius:15px;
-  margin-top:20px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.05);
-}
-</style>
+        .fg-header p {
+            margin: 4px 0 0;
+            color: var(--fg-text-soft);
+        }
+
+        .pill {
+            padding: 8px 18px;
+            border-radius: var(--fg-radius-pill);
+            background: rgba(46, 204, 113, 0.08);
+            color: var(--fg-primary-dark);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .fg-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 16px 10px;
+            position: sticky;
+            top: 96px;
+            z-index: 15;
+            backdrop-filter: blur(14px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-btn {
+            border-radius: var(--fg-radius-pill);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--fg-text-soft);
+            transition: all 0.22s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-btn.active {
+            background: var(--fg-primary);
+            color: #ffffff;
+            border-color: var(--fg-primary);
+        }
+
+        .fg-main {
+            max-width: 1100px;
+            margin: 24px auto 40px;
+            padding: 0 16px 32px;
+        }
+
+        .card {
+            background: var(--fg-card-bg);
+            border-radius: var(--fg-radius-lg);
+            box-shadow: var(--fg-shadow-soft);
+            padding: 28px 26px 30px;
+            border: 1px solid var(--fg-border-subtle);
+            animation: fadeInUp 0.35s ease;
+            display: none;
+        }
+
+        .card.active {
+            display: block;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            border-left: 5px solid var(--fg-primary);
+            padding-left: 14px;
+        }
+
+        .subtitle {
+            color: var(--fg-text-soft);
+            margin-top: 8px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: var(--fg-radius-md);
+            padding: 18px 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--fg-border-subtle);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--fg-text-soft);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-value.warning {
+            color: #e67e22;
+        }
+
+        .stat-value.success {
+            color: #27ae60;
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: var(--fg-text-soft);
+        }
+
+        .image-shell {
+            margin-top: 24px;
+        }
+
+        .image-placeholder {
+            border-radius: var(--fg-radius-md);
+            border: 1px dashed rgba(0, 0, 0, 0.1);
+            padding: 26px;
+            text-align: center;
+            font-size: 0.92rem;
+            color: var(--fg-text-soft);
+            background: linear-gradient(135deg, #ffffff 0%, #eef3ff 100%);
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border-radius: var(--fg-radius-md);
+            padding: 20px 20px 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card h3 {
+            margin-top: 0;
+        }
+
+        .highlight-panel {
+            margin-top: 22px;
+            border-radius: var(--fg-radius-md);
+            padding: 18px 20px 16px;
+            background: linear-gradient(120deg, rgba(46, 204, 113, 0.08), rgba(52, 152, 219, 0.08));
+        }
+
+        .styled-list {
+            padding-left: 20px;
+        }
+
+        .styled-list li {
+            margin-bottom: 6px;
+        }
+
+        .symptom-panel {
+            background: #ffffff;
+            border-radius: var(--fg-radius-md);
+            padding: 20px;
+        }
+
+        .tag-row {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 5px 12px;
+            border-radius: var(--fg-radius-pill);
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: #ffffff;
+        }
+
+        .chip-warning {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .chip-neutral {
+            border-color: #95a5a6;
+            color: #7f8c8d;
+        }
+
+        .chip-critical {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .timeline-item {
+            padding: 16px 18px;
+            border-radius: var(--fg-radius-md);
+            background: #ffffff;
+            border-left: 4px solid var(--fg-secondary);
+        }
+
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .chart-shell {
+            background: #ffffff;
+            border-radius: var(--fg-radius-md);
+            padding: 12px 16px 16px;
+            min-height: 260px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .monitoring-side {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border-radius: var(--fg-radius-md);
+            padding: 12px 14px;
+            border: 1px solid var(--fg-border-subtle);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--fg-text-soft);
+        }
+
+        .metric-value {
+            display: block;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .metric-value.warning {
+            color: #e67e22;
+        }
+
+        .primary-btn,
+        .ghost-btn {
+            padding: 11px 16px;
+            border-radius: var(--fg-radius-pill);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.22s ease;
+        }
+
+        .primary-btn {
+            background: var(--fg-primary);
+            color: #ffffff;
+        }
+
+        .primary-btn:hover {
+            background: var(--fg-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .ghost-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--fg-text-main);
+        }
+
+        .ghost-btn:hover {
+            background: #ffffff;
+        }
+
+        .advice-panel {
+            background: #ffffff;
+            border-left: 6px solid var(--fg-secondary);
+            border-radius: var(--fg-radius-md);
+            padding: 20px 22px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .fg-header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .monitoring-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="fg-root">
+        <header class="fg-header">
+            <div class="fg-header-inner">
+                <div>
+                    <h1>FootGuard</h1>
+                    <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
+                </div>
+                <div class="pill">Medical Dashboard Template</div>
+            </div>
+        </header>
 
-<header>
-  <h1>FootGuard</h1>
-  <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
-</header>
+        <nav class="fg-nav">
+            <button class="nav-btn active" data-target="overview">Overview</button>
+            <button class="nav-btn" data-target="design">Design</button>
+            <button class="nav-btn" data-target="symptoms">Symptoms</button>
+            <button class="nav-btn" data-target="treatments">Treatments</button>
+            <button class="nav-btn" data-target="monitoring">Monitoring</button>
+            <button class="nav-btn" data-target="advice">Clinical Advice</button>
+        </nav>
 
-<nav>
-  <button class="tab-btn active" data-target="overview">Overview</button>
-  <button class="tab-btn" data-target="design">Design</button>
-  <button class="tab-btn" data-target="symptoms">Symptoms</button>
-  <button class="tab-btn" data-target="treatment">Types of Treatment</button>
-  <button class="tab-btn" data-target="monitoring">Live Monitoring</button>
-  <button class="tab-btn" data-target="advice">Clinical Advice</button>
-</nav>
+        <main class="fg-main">
+            <!-- Overview -->
+            <section id="overview" class="card active">
+                <h2>The Importance of Monitoring</h2>
+                <p>
+                    Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation
+                    worldwide. Early detection of pressure hotspots and subtle skin changes can
+                    dramatically reduce complications.
+                </p>
+                <div class="grid grid-3">
+                    <div class="stat-card">
+                        <span class="stat-label">At-risk patients</span>
+                        <span class="stat-value">124</span>
+                        <span class="stat-sub">Monitored with FootGuard</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Alerts this week</span>
+                        <span class="stat-value warning">18</span>
+                        <span class="stat-sub">Requiring follow-up</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Prevented escalations</span>
+                        <span class="stat-value success">7</span>
+                        <span class="stat-sub">Avoided severe DFUs</span>
+                    </div>
+                </div>
+                <div class="image-shell">
+                    <div class="image-placeholder">
+                        Device + insole diagram / anatomy visual goes here.
+                    </div>
+                </div>
+            </section>
 
-<!-- Overview -->
-<section id="overview" class="active">
-  <h2>The Importance of Monitoring</h2>
-  <p>Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide...</p>
-  <img src="data:image/jpeg;base64,/9j/4AA..." style="display:block; margin: 0 auto; max-width:100%;" alt="FootGuard Diagram">
-</section>
+            <!-- Design -->
+            <section id="design" class="card">
+                <h2>Device & System Design</h2>
+                <p>
+                    The FootGuard device integrates pressure sensors, wireless communication, and an
+                    AI-based risk assessment engine into a single, clinician-friendly platform.
+                </p>
+                <div class="grid grid-2">
+                    <div class="feature-card">
+                        <h3>Smart Insole Architecture</h3>
+                        <ul>
+                            <li>High-density plantar pressure sensor array</li>
+                            <li>Flexible, low-profile form factor for daily wear</li>
+                            <li>Temperature and moisture sensing (optional)</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Connectivity & Data Flow</h3>
+                        <ul>
+                            <li>BLE connection to patient mobile app</li>
+                            <li>Secure cloud sync to clinician dashboard</li>
+                            <li>Real-time alerting for threshold breaches</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="highlight-panel">
+                    <h3>AI Risk Stratification</h3>
+                    <p>
+                        The AI model combines pressure patterns, wearing time, and historical ulcer
+                        events to classify patients into low, medium, and high-risk cohorts, enabling
+                        proactive outreach.
+                    </p>
+                </div>
+            </section>
 
-<!-- Design -->
-<section id="design">
-  <h2>Device Design</h2>
-  <p>The FootGuard device integrates pressure sensors, wireless communication, and an AI-based risk assessment algorithm...</p>
-</section>
+            <!-- Symptoms -->
+            <section id="symptoms" class="card">
+                <h2>Symptoms of DFUs</h2>
+                <div class="grid grid-2">
+                    <div>
+                        <ul class="styled-list">
+                            <li>Persistent redness or localized warmth in the foot</li>
+                            <li>Swelling around bony prominences or pressure points</li>
+                            <li>Open sores or wounds that are slow to heal</li>
+                            <li>Pain, tingling, burning, or numbness</li>
+                            <li>Discoloration, callus buildup, or skin breakdown</li>
+                        </ul>
+                    </div>
+                    <div class="symptom-panel">
+                        <h3>Early Warning Focus</h3>
+                        <p>
+                            FootGuard surfaces subtle changes in pressure distribution and activity
+                            patterns before visible symptoms appear, giving clinicians a window to
+                            intervene early.
+                        </p>
+                        <div class="tag-row">
+                            <span class="chip chip-warning">High pressure</span>
+                            <span class="chip chip-neutral">Reduced sensation</span>
+                            <span class="chip chip-critical">Skin breakdown</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-<!-- Symptoms -->
-<section id="symptoms">
-  <h2>Symptoms of DFUs</h2>
-  <ul>
-    <li>Redness or swelling in the foot</li>
-    <li>Open sores or wounds that are slow to heal</li>
-    <li>Pain, tingling, or numbness in the foot</li>
-    <li>Discoloration or skin changes</li>
-  </ul>
-</section>
+            <!-- Treatments -->
+            <section id="treatments" class="card">
+                <h2>Types of Treatment</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h3>1. Wound Care & Dressings</h3>
+                        <p>
+                            Regular debridement, moisture-balanced dressings, and infection control
+                            protocols to support healing.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>2. Offloading & Footwear</h3>
+                        <p>
+                            Custom insoles, boots, and footwear designed to redistribute pressure away
+                            from vulnerable areas.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>3. Antibiotic Therapy</h3>
+                        <p>
+                            Targeted treatment for soft-tissue and bone infections, guided by cultures
+                            and imaging.
+                        </p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>4. Surgical Intervention</h3>
+                        <p>
+                            In advanced cases, surgical offloading, debridement, or reconstruction may
+                            be required to restore function and prevent amputation.
+                        </p>
+                    </div>
+                </div>
+            </section>
 
-<!-- Types of Treatment -->
-<section id="treatment">
-  <h2>Types of Treatment</h2>
-  <ul>
-    <li>Wound care and dressings</li>
-    <li>Offloading pressure with specialized footwear</li>
-    <li>Antibiotic therapy for infections</li>
-    <li>Surgical intervention in severe cases</li>
-  </ul>
-</section>
+            <!-- Monitoring -->
+            <section id="monitoring" class="card">
+                <h2>Live Monitoring</h2>
+                <p class="subtitle">
+                    Stream real-time plantar pressure and activity trends to catch red flags before
+                    they become ulcers.
+                </p>
+                <div class="monitoring-grid">
+                    <div class="chart-shell">
+                        <canvas id="pressureChart"></canvas>
+                    </div>
+                    <div class="monitoring-side">
+                        <div class="metric-card">
+                            <span class="metric-label">Current risk level</span>
+                            <span class="metric-value warning">Elevated</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Alerts in last 24h</span>
+                            <span class="metric-value">3</span>
+                        </div>
+                        <button class="primary-btn">Connect Device</button>
+                        <button class="ghost-btn">View patient list</button>
+                    </div>
+                </div>
+            </section>
 
-<!-- Live Monitoring -->
-<section id="monitoring">
-  <h2>Live Monitoring</h2>
-  <div class="chart-container">
-    <canvas id="pressureChart"></canvas>
-  </div>
-  <button class="connect-btn">Connect Device</button>
-</section>
+            <!-- Advice -->
+            <section id="advice" class="card">
+                <h2>Clinical Advice</h2>
+                <div class="advice-panel">
+                    <h3>Routine Foot Examinations</h3>
+                    <p>
+                        Perform structured foot exams at every visit: inspect skin, nails, and
+                        pressure zones; assess pulses and sensation; document findings clearly.
+                    </p>
+                    <h3>Follow-Up Workflow</h3>
+                    <ul class="styled-list">
+                        <li>Review FootGuard alerts and high-risk patients daily.</li>
+                        <li>Prioritize outreach to newly elevated-risk individuals.</li>
+                        <li>Coordinate care with podiatry, wound care, and vascular teams.</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
 
-<!-- Clinical Advice -->
-<section id="advice">
-  <h2>Clinical Advice</h2>
-  <div class="advice">
-    <p>Regular foot examinations are essential to prevent DFU progression...</p>
-  </div>
-</section>
+    <script>
+        const tabs = document.querySelectorAll(".nav-btn");
+        const sections = document.querySelectorAll(".card");
+        let pressureChartInstance = null;
 
-<script>
-// Tab functionality
-const tabs = document.querySelectorAll('.tab-btn');
-const sections = document.querySelectorAll('section');
+        function showSection(targetId) {
+            tabs.forEach((btn) => btn.classList.remove("active"));
+            sections.forEach((sec) => sec.classList.remove("active"));
 
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    // Remove active from all tabs & sections
-    tabs.forEach(t => t.classList.remove('active'));
-    sections.forEach(s => s.classList.remove('active'));
-    // Activate clicked tab and target section
-    tab.classList.add('active');
-    document.getElementById(tab.dataset.target).classList.add('active');
-  });
-});
+            const activeBtn = document.querySelector(`.nav-btn[data-target="${targetId}"]`);
+            const activeSection = document.getElementById(targetId);
 
-// Example Chart.js chart for Live Monitoring
-const ctx = document.getElementById('pressureChart').getContext('2d');
-const pressureChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['0s','10s','20s','30s','40s'],
-    datasets: [{
-      label: 'Plantar Pressure',
-      data: [12, 15, 13, 17, 16],
-      borderColor: 'rgba(46, 204, 113, 1)',
-      backgroundColor: 'rgba(46, 204, 113, 0.2)',
-      tension: 0.3
-    }]
-  },
-  options: { responsive:true, maintainAspectRatio:false }
-});
-</script>
+            if (activeBtn && activeSection) {
+                activeBtn.classList.add("active");
+                activeSection.classList.add("active");
+            }
 
+            if (targetId === "monitoring") {
+                initPressureChart();
+            }
+        }
+
+        function initPressureChart() {
+            const ctx = document.getElementById("pressureChart");
+            if (!ctx) return;
+
+            if (pressureChartInstance) {
+                pressureChartInstance.destroy();
+            }
+
+            pressureChartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["0s", "10s", "20s", "30s", "40s", "50s"],
+                    datasets: [
+                        {
+                            label: "Plantar Pressure (kPa)",
+                            data: [12, 15, 13, 17, 16, 18],
+                            borderColor: "rgba(46, 204, 113, 1)",
+                            backgroundColor: "rgba(46, 204, 113, 0.15)",
+                            tension: 0.3,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Live Plantar Pressure Trend"
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                const target = tab.getAttribute("data-target");
+                showSection(target);
+            });
+        });
+
+        // Default view
+        showSection("overview");
+    </script>
 </body>
 </html>
