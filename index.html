@@ -7,349 +7,251 @@
 
 <style>
 :root {
-    --fg-primary: #2ecc71;
-    --fg-primary-dark: #27ae60;
-    --fg-secondary: #3498db;
-    --fg-accent: #f39c12;
-    --fg-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    --fg-card-bg: rgba(255, 255, 255, 0.96);
-    --fg-shadow-soft: 0 18px 45px rgba(31, 38, 135, 0.16);
-    --fg-radius-lg: 22px;
-    --fg-radius-md: 16px;
-    --fg-radius-pill: 999px;
-    --fg-text-main: #2c3e50;
-    --fg-text-soft: #6b7b8c;
-    --fg-border-subtle: rgba(0, 0, 0, 0.05);
+  --fg-primary:#2ecc71;
+  --fg-primary-dark:#27ae60;
+  --fg-bg:linear-gradient(135deg,#f5f7fa,#c3cfe2);
+  --fg-card:#fff;
+  --fg-radius:18px;
 }
 
 body {
-    margin: 0;
-    font-family: system-ui, sans-serif;
-    background: var(--fg-bg-gradient);
-    color: var(--fg-text-main);
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:var(--fg-bg);
 }
 
-.fg-header {
-    background: #fff;
-    padding: 30px;
-    border-bottom: 4px solid var(--fg-primary);
-    box-shadow: var(--fg-shadow-soft);
+header {
+  background:#fff;
+  padding:30px;
+  border-bottom:4px solid var(--fg-primary);
 }
 
 .fg-header-inner {
-    max-width: 1100px;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
 }
 
-.pill {
-    background: rgba(46,204,113,.1);
-    color: var(--fg-primary-dark);
-    padding: 8px 18px;
-    border-radius: var(--fg-radius-pill);
-    font-weight: 600;
-}
-
-.fg-nav {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding: 16px;
-    background: rgba(255,255,255,.7);
-    backdrop-filter: blur(10px);
+nav {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:16px;
+  background:rgba(255,255,255,.7);
 }
 
 .nav-btn {
-    border-radius: var(--fg-radius-pill);
-    border: 1px solid #ddd;
-    background: #fff;
-    padding: 10px 22px;
-    cursor: pointer;
-    font-weight: 600;
+  padding:10px 22px;
+  border-radius:999px;
+  border:1px solid #ddd;
+  background:#fff;
+  cursor:pointer;
+  font-weight:600;
 }
 
 .nav-btn.active {
-    background: var(--fg-primary);
-    color: #fff;
+  background:var(--fg-primary);
+  color:#fff;
 }
 
-.fg-main {
-    max-width: 1100px;
-    margin: auto;
-    padding: 20px;
+main {
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
 }
 
 .card {
-    background: var(--fg-card-bg);
-    border-radius: var(--fg-radius-lg);
-    padding: 26px;
-    margin-top: 20px;
-    display: none;
+  background:var(--fg-card);
+  border-radius:var(--fg-radius);
+  padding:26px;
+  margin-top:20px;
+  display:none;
 }
 
-.card.active {
-    display: block;
-}
+.card.active { display:block; }
 
 .monitoring-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:16px;
 }
 
 .chart-shell {
-    background: #fff;
-    border-radius: var(--fg-radius-md);
-    padding: 16px;
-    height: 350px;
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  height:350px;
 }
 
 .metric-card {
-    background: #fff;
-    border-radius: var(--fg-radius-md);
-    padding: 14px;
-    margin-bottom: 12px;
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
 }
 
-.metric-value.warning { color: #e67e22; }
-.metric-value.high { color: #e74c3c; }
+.metric-value.warning { color:#e67e22; }
+.metric-value.high { color:#e74c3c; }
 
 .primary-btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: var(--fg-radius-pill);
-    border: none;
-    background: var(--fg-primary);
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
+  width:100%;
+  padding:12px;
+  border-radius:999px;
+  border:none;
+  background:var(--fg-primary);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<header class="fg-header">
-    <div class="fg-header-inner">
-        <div>
-            <h1>FootGuard</h1>
-            <p>Diabetic Foot Ulcer (DFU) Risk Monitoring</p>
-        </div>
-        <div class="pill">Simulation Mode</div>
+<header>
+  <div class="fg-header-inner">
+    <div>
+      <h1>FootGuard</h1>
+      <p>Diabetic Foot Ulcer Risk Monitoring</p>
     </div>
+    <div><strong>Simulation Mode</strong></div>
+  </div>
 </header>
 
-<nav class="fg-nav">
-    <button class="nav-btn active" data-target="overview">Overview</button>
-    <button class="nav-btn" data-target="monitoring">Live Monitoring</button>
-    <button class="nav-btn" data-target="advice">Clinical Advice</button>
+<nav>
+  <button class="nav-btn active" data-target="overview">Overview</button>
+  <button class="nav-btn" data-target="monitoring">Live Monitoring</button>
+  <button class="nav-btn" data-target="advice">Clinical Advice</button>
 </nav>
 
-<main class="fg-main">
+<main>
 
 <section id="overview" class="card active">
-   <section id="why-monitor">
-  <h2>Why Monitor Diabetic Foot Ulcer Disease?</h2>
+  <h2>Why Monitor Diabetic Foot Ulcers?</h2>
 
+  <p><strong>Silent Damage:</strong> Neuropathy reduces pain sensation, allowing tissue damage to occur unnoticed.</p>
+  <p><strong>Pressure Causes Ulcers:</strong> Repeated high plantar pressure damages tissue before wounds appear.</p>
 
-    <p><strong>Silent Damage:</strong></p>
-    <p>
-      Many people with diabetes experience neuropathy, which reduces sensation in the feet.
-      This means tissue damage can occur without pain or noticeable warning signs.
-    </p>
-
-
-    <p><strong>Pressure Causes Ulcers Before Wounds Appear:</strong></p>
-    <p>
-      Repeated high plantar pressure breaks down tissue internally.
-      By the time a wound becomes visible, severe damage may already exist beneath the skin.
-    </p>
-    <p><strong>Early Detection Prevents Complications:</strong></p>
-    <ul>
-      <li>Allows early pressure redistribution</li>
-      <li>Prevents infections and hospitalizations</li>
-      <li>Reduces the risk of chronic wounds</li>
-    </ul>
-
-    <p><strong>Prevention of Amputation:</strong></p>
-    <p>
-      Diabetic foot ulcers are a leading cause of lower-limb amputations.
-      Continuous monitoring significantly lowers this risk.
-    </p>
-  
-    <p><strong>Improved Quality of Life:</strong></p>
-    <p>
-      Monitoring helps patients maintain mobility, independence,
-      and overall health by preventing long-term complications.
-    </p>
-
-
-    <p><strong>Data-Driven Care:</strong></p>
-    <p>
-      Real-time monitoring enables personalized treatment plans and more informed 
-      clinical decisions based on objective pressure data.
-    </p>
+  <ul>
+    <li>Prevents infection and hospitalization</li>
+    <li>Reduces amputation risk</li>
+    <li>Maintains mobility and independence</li>
+  </ul>
 
   <h2>About FootGuard</h2>
+  <p>
+    FootGuard is a preventive monitoring system that tracks plantar pressure in
+    real time to detect diabetic foot ulcer risk before visible damage occurs.
+  </p>
 
-  <div class="advice">
-    <p><strong>What Is FootGuard?</strong></p>
-    <p>
-      FootGuard is a preventive health monitoring system designed to reduce the risk
-      of diabetic foot ulcers by tracking plantar pressure patterns in real time.
-      It focuses on early detection rather than reactive treatment.
-    </p>
- 
-    <p><strong>How FootGuard Works:</strong></p>
-    <ul>
-      <li>Monitors pressure distribution across the foot</li>
-      <li>Identifies sustained high-pressure zones</li>
-      <li>Flags areas at risk for tissue breakdown</li>
-      <li>Provides clear, actionable feedback</li>
-    </ul>
- 
-    <p><strong>Why FootGuard Matters:</strong></p>
-    <p>
-      Because many diabetic patients cannot feel pain due to neuropathy,
-      FootGuard acts as an early warning system, detecting harmful pressure
-      before ulcers, infections, or irreversible damage occur.
-    </p>
-
-    <p><strong>Impact on Patient Care:</strong></p>
-    <ul>
-      <li>Supports early intervention and prevention</li>
-      <li>Reduces risk of hospitalization and amputation</li>
-      <li>Improves long-term mobility and independence</li>
-
+  <ul>
+    <li>Identifies high-pressure zones</li>
+    <li>Provides early warnings</li>
+    <li>Supports data-driven care</li>
+  </ul>
 </section>
 
 <section id="monitoring" class="card">
-    <h2>Live Plantar Pressure</h2>
+  <h2>Live Plantar Pressure</h2>
 
-    <div class="monitoring-grid">
-        <div class="chart-shell">
-            <canvas id="pressureChart"></canvas>
-        </div>
-
-        <div>
-            <div class="metric-card">
-                <span>Current Risk</span>
-                <span id="riskLevel" class="metric-value warning">Low</span>
-            </div>
-
-            <div class="metric-card">
-                <span>Confidence</span>
-                <span id="riskConfidence" class="metric-value">—</span>
-            </div>
-
-            <button class="primary-btn" onclick="connectDevice()">Connect Device</button>
-        </div>
+  <div class="monitoring-grid">
+    <div class="chart-shell">
+      <canvas id="pressureChart"></canvas>
     </div>
+
+    <div>
+      <div class="metric-card">
+        <span>Current Risk</span><br>
+        <span id="riskLevel" class="metric-value warning">Low</span>
+      </div>
+
+      <div class="metric-card">
+        <span>Confidence</span><br>
+        <span id="riskConfidence">—</span>
+      </div>
+
+      <button class="primary-btn" onclick="connectDevice()">Connect Device</button>
+    </div>
+  </div>
 </section>
 
 <section id="advice" class="card">
-    <h2>Clinical Interpretation</h2>
-    <div id="adviceText">
-        Waiting for telemetry…
-    </div>
+  <h2>Clinical Interpretation</h2>
+  <div id="adviceText">Waiting for telemetry…</div>
 </section>
 
 </main>
 
 <script>
-/* ================= NAV ================= */
 const tabs = document.querySelectorAll(".nav-btn");
 const cards = document.querySelectorAll(".card");
 
-tabs.forEach(tab => {
-    tab.onclick = () => {
-        tabs.forEach(t=>t.classList.remove("active"));
-        cards.forEach(c=>c.classList.remove("active"));
-        tab.classList.add("active");
-        document.getElementById(tab.dataset.target).classList.add("active");
-    };
+tabs.forEach(tab=>{
+  tab.onclick=()=>{
+    tabs.forEach(t=>t.classList.remove("active"));
+    cards.forEach(c=>c.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.target).classList.add("active");
+  }
 });
 
-/* ================= CHART ================= */
-const ctx = document.getElementById("pressureChart").getContext("2d");
-const pressureChart = new Chart(ctx, {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [
-            { label: "Medial Sensor", data: [], borderColor: "#3498db", tension: 0.4 },
-            { label: "Lateral Sensor", data: [], borderColor: "#e74c3c", tension: 0.4 }
-        ]
+let connected=false;
+let chart;
+
+function initChart(){
+  const ctx=document.getElementById("pressureChart").getContext("2d");
+  chart=new Chart(ctx,{
+    type:"line",
+    data:{
+      labels:[],
+      datasets:[
+        {label:"Medial Sensor",data:[],borderColor:"#3498db"},
+        {label:"Lateral Sensor",data:[],borderColor:"#e74c3c"}
+      ]
     },
-    options: {
-        responsive: true,
-        animation: false,
-        scales: { y: { min: 0, max: 100 } }
-    }
-});
-
-/* ================= STATE ================= */
-let connected = false;
-
-/* ================= DFU LOGIC ================= */
-function extractFeatures(a, b) {
-    const avg = a.map((v,i)=>(v+b[i])/2);
-    return {
-        mean: avg.reduce((x,y)=>x+y,0)/avg.length,
-        p90: [...avg].sort((x,y)=>x-y)[Math.floor(avg.length*0.9)],
-        imbalance: Math.abs(a[a.length-1]-b[b.length-1])
-    };
+    options:{animation:false,scales:{y:{min:0,max:100}}}
+  });
 }
 
-function assessRisk(f) {
-    let score = 0;
-    if (f.mean > 55) score++;
-    if (f.p90 > 70) score += 2;
-    if (f.imbalance > 20) score++;
-
-    if (score <= 1) return { level:"Low", conf:0.9, msg:"Pressure within safe limits." };
-    if (score === 2) return { level:"Moderate", conf:0.87, msg:"Sustained pressure detected." };
-    return { level:"High", conf:0.93, msg:"Immediate offloading recommended." };
+function assessRisk(avg){
+  if(avg<40) return ["Low",0.9,"Pressure within safe limits."];
+  if(avg<65) return ["Moderate",0.87,"Sustained pressure detected."];
+  return ["High",0.93,"Immediate offloading recommended."];
 }
 
-/* ================= DATA STREAM ================= */
-function pushData() {
-    if (!connected) return;
+function pushData(){
+  if(!connected||!chart) return;
 
-    const s1 = Math.random()*100;
-    const s2 = Math.random()*100;
+  const a=Math.random()*100;
+  const b=Math.random()*100;
 
-    pressureChart.data.labels.push(new Date().toLocaleTimeString());
-    pressureChart.data.datasets[0].data.push(s1);
-    pressureChart.data.datasets[1].data.push(s2);
+  chart.data.labels.push(new Date().toLocaleTimeString());
+  chart.data.datasets[0].data.push(a);
+  chart.data.datasets[1].data.push(b);
 
-    if (pressureChart.data.labels.length > 50) {
-        pressureChart.data.labels.shift();
-        pressureChart.data.datasets.forEach(d=>d.data.shift());
-    }
+  if(chart.data.labels.length>30){
+    chart.data.labels.shift();
+    chart.data.datasets.forEach(d=>d.data.shift());
+  }
 
-    pressureChart.update();
+  chart.update();
 
-    if (pressureChart.data.datasets[0].data.length >= 30) {
-        const f = extractFeatures(
-            pressureChart.data.datasets[0].data.slice(-30),
-            pressureChart.data.datasets[1].data.slice(-30)
-        );
+  const avg=(a+b)/2;
+  const [level,conf,msg]=assessRisk(avg);
 
-        const r = assessRisk(f);
-        document.getElementById("riskLevel").textContent = r.level;
-        document.getElementById("riskConfidence").textContent = (r.conf*100).toFixed(1)+"%";
-        document.getElementById("adviceText").innerHTML = `<p><strong>${r.level} DFU Risk</strong></p><p>${r.msg}</p>`;
-    }
+  riskLevel.textContent=level;
+  riskConfidence.textContent=(conf*100).toFixed(1)+"%";
+  adviceText.innerHTML=`<strong>${level} Risk:</strong> ${msg}`;
 }
 
-setInterval(pushData, 500);
-
-function connectDevice() {
-    connected = true;
-    alert("Simulation started: FootGuard connected.");
+function connectDevice(){
+  if(!chart) initChart();
+  connected=true;
+  alert("FootGuard simulation started");
 }
+
+setInterval(pushData,500);
 </script>
 
 </body>
