@@ -13,144 +13,193 @@
   --card-bg: rgba(255, 255, 255, 0.9);
   --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gradient); margin:0; padding:0; color:#2c3e50; }
-header { background:white; padding:40px 20px; text-align:center; border-bottom:4px solid var(--primary); box-shadow: var(--shadow);}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-gradient);
+  margin:0;
+  padding:0;
+  color:#2c3e50;
+}
+header {
+  background:white;
+  padding:40px 20px;
+  text-align:center;
+  border-bottom:4px solid var(--primary);
+  box-shadow: var(--shadow);
+}
 header h1 { margin:0; font-size:2.5em; }
 header p { margin:5px 0 0; opacity:0.8; }
-nav { display:flex; justify-content:center; gap:10px; padding:20px; position:sticky; top:0; background:rgba(255,255,255,0.7); backdrop-filter:blur(10px); z-index:100;}
-nav button { background:white; border:1px solid #ddd; padding:12px 25px; border-radius:50px; cursor:pointer; font-weight:600; transition:0.3s;}
-nav button.active { background:var(--primary); color:white; border-color:var(--primary);}
-section { display:none; padding:40px; max-width:1000px; margin:30px auto; background:var(--card-bg); border-radius:20px; box-shadow:var(--shadow);}
-section.active { display:block;}
+
+nav {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:20px;
+  position:sticky;
+  top:0;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(10px);
+  z-index:100;
+}
+nav button {
+  background:white;
+  border:1px solid #ddd;
+  padding:12px 25px;
+  border-radius:50px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
+}
+nav button.active {
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
+}
+
+section {
+  display:none;
+  padding:40px;
+  max-width:1000px;
+  margin:30px auto;
+  background:var(--card-bg);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+section.active { display:block; }
+
 h2 { border-left:5px solid var(--primary); padding-left:15px; margin-bottom:25px; }
-.chart-container { width:100%; height:400px; background:white; padding:20px; border-radius:15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);}
-.connect-btn { padding:15px 40px; font-size:16px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin:15px 0;}
-.connect-btn:hover { background:var(--primary-dark);}
-.advice { background:white; padding:25px; border-left:8px solid var(--secondary); border-radius:15px; margin-top:20px; box-shadow:0 4px 15px rgba(0,0,0,0.05);}
+
+.chart-container {
+  width:100%;
+  height:400px;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.connect-btn {
+  padding:15px 40px;
+  font-size:16px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  margin:15px 0;
+}
+.connect-btn:hover { background:var(--primary-dark); }
+
+.advice {
+  background:white;
+  padding:25px;
+  border-left:8px solid var(--secondary);
+  border-radius:15px;
+  margin-top:20px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
 </style>
 </head>
 <body>
 
 <header>
-<h1>FootGuard</h1>
-<p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
+  <h1>FootGuard</h1>
+  <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
 </header>
 
 <nav>
-<button class="tab-btn active" data-target="landing">Overview</button>
-<button class="tab-btn" data-target="pressure">Live Monitoring</button>
-<button class="tab-btn" data-target="interpretation">Clinical Advice</button>
+  <button class="tab-btn active" data-target="overview">Overview</button>
+  <button class="tab-btn" data-target="design">Design</button>
+  <button class="tab-btn" data-target="symptoms">Symptoms</button>
+  <button class="tab-btn" data-target="treatment">Types of Treatment</button>
+  <button class="tab-btn" data-target="monitoring">Live Monitoring</button>
+  <button class="tab-btn" data-target="advice">Clinical Advice</button>
 </nav>
 
-<section id="landing" class="active">
-<h2>The Importance of Monitoring</h2> <p> <strong>Abstract:</strong> Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide. Clinical research demonstrates that prolonged elevated plantar pressure, particularly in patients with diabetic neuropathy, is a primary biomechanical predictor of ulcer formation. </p> <p> Due to nerve damage and reduced sensation, many individuals with diabetes cannot perceive harmful pressure accumulation in the foot. Without intervention, repetitive mechanical stress leads to tissue breakdown, infection, and ulceration. </p> <p> FootGuard continuously analyzes plantar pressure patterns to estimate DFU risk using statistically derived features validated in peer-reviewed literature. The goal is <strong>early detection, prevention, and risk awareness</strong>. </p>
-<img src="data:image/jpeg;base64,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">
-</section>
-<section id="pressure">
-<h2>Live Plantar Pressure Data</h2>
-<button class="connect-btn" onclick="connectBLE()">Connect FootGuard Device</button>
-<div class="chart-container">
-<canvas id="pressureChart"></canvas>
-</div>
+<!-- Overview -->
+<section id="overview" class="active">
+  <h2>The Importance of Monitoring</h2>
+  <p>Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide...</p>
+  <img src="data:image/jpeg;base64,/9j/4AA..." style="display:block; margin: 0 auto; max-width:100%;" alt="FootGuard Diagram">
 </section>
 
-<section id="interpretation">
-<h2>DFU Risk Interpretation</h2>
-<div id="adviceText" class="advice">
-<p>Waiting for telemetry... Please connect the FootGuard device to begin analysis.</p>
-</div>
+<!-- Design -->
+<section id="design">
+  <h2>Device Design</h2>
+  <p>The FootGuard device integrates pressure sensors, wireless communication, and an AI-based risk assessment algorithm...</p>
+</section>
+
+<!-- Symptoms -->
+<section id="symptoms">
+  <h2>Symptoms of DFUs</h2>
+  <ul>
+    <li>Redness or swelling in the foot</li>
+    <li>Open sores or wounds that are slow to heal</li>
+    <li>Pain, tingling, or numbness in the foot</li>
+    <li>Discoloration or skin changes</li>
+  </ul>
+</section>
+
+<!-- Types of Treatment -->
+<section id="treatment">
+  <h2>Types of Treatment</h2>
+  <ul>
+    <li>Wound care and dressings</li>
+    <li>Offloading pressure with specialized footwear</li>
+    <li>Antibiotic therapy for infections</li>
+    <li>Surgical intervention in severe cases</li>
+  </ul>
+</section>
+
+<!-- Live Monitoring -->
+<section id="monitoring">
+  <h2>Live Monitoring</h2>
+  <div class="chart-container">
+    <canvas id="pressureChart"></canvas>
+  </div>
+  <button class="connect-btn">Connect Device</button>
+</section>
+
+<!-- Clinical Advice -->
+<section id="advice">
+  <h2>Clinical Advice</h2>
+  <div class="advice">
+    <p>Regular foot examinations are essential to prevent DFU progression...</p>
+  </div>
 </section>
 
 <script>
-// ================= TAB NAVIGATION =================
+// Tab functionality
 const tabs = document.querySelectorAll('.tab-btn');
 const sections = document.querySelectorAll('section');
+
 tabs.forEach(tab => {
   tab.addEventListener('click', () => {
-    tabs.forEach(t=>t.classList.remove('active'));
+    // Remove active from all tabs & sections
+    tabs.forEach(t => t.classList.remove('active'));
+    sections.forEach(s => s.classList.remove('active'));
+    // Activate clicked tab and target section
     tab.classList.add('active');
-    sections.forEach(s=>s.classList.remove('active'));
     document.getElementById(tab.dataset.target).classList.add('active');
   });
 });
 
-// ================= CHART =================
+// Example Chart.js chart for Live Monitoring
 const ctx = document.getElementById('pressureChart').getContext('2d');
 const pressureChart = new Chart(ctx, {
-  type:'line',
-  data:{
-    labels:[],
-    datasets:[
-      {label:'Medial (Sensor 1)', borderColor:'#3498db', backgroundColor:'rgba(52,152,219,0.1)', data:[], fill:true, tension:0.4},
-      {label:'Lateral (Sensor 2)', borderColor:'#e74c3c', backgroundColor:'rgba(231,76,60,0.1)', data:[], fill:true, tension:0.4}
-    ]
+  type: 'line',
+  data: {
+    labels: ['0s','10s','20s','30s','40s'],
+    datasets: [{
+      label: 'Plantar Pressure',
+      data: [12, 15, 13, 17, 16],
+      borderColor: 'rgba(46, 204, 113, 1)',
+      backgroundColor: 'rgba(46, 204, 113, 0.2)',
+      tension: 0.3
+    }]
   },
-  options:{responsive:true, animation:{duration:0}, scales:{y:{min:0,max:100,title:{display:true,text:'Pressure %'}}, x:{title:{display:true,text:'Timeline'}}}, plugins:{legend:{position:'top'}}}
+  options: { responsive:true, maintainAspectRatio:false }
 });
-
-// ================= STATE =================
-let isBLEConnected = false;
-
-// ================= SIMULATED BLE =================
-async function connectBLE(){
-  isBLEConnected = true;
-  alert('Simulation Mode: BLE device "connected".');
-}
-
-// ================= DFU MODEL =================
-function extractFeatures(d1,d2){
-  const combined=d1.map((v,i)=> (v+d2[i])/2);
-  const mean=combined.reduce((a,b)=>a+b,0)/combined.length;
-  const sorted=[...combined].sort((a,b)=>a-b);
-  const p90=sorted[Math.floor(sorted.length*0.9)];
-  const imbalance=Math.abs(d1[d1.length-1]-d2[d2.length-1]);
-  return {mean,p90,imbalance};
-}
-
-function mlRiskAssessment(features){
-  let score=0;
-  if(features.mean>55) score+=1;
-  if(features.p90>70) score+=2;
-  if(features.imbalance>20) score+=1;
-  if(score<=1) return {level:"Low DFU Risk", confidence:0.90};
-  if(score===2) return {level:"Moderate DFU Risk", confidence:0.87};
-  return {level:"High DFU Risk", confidence:0.93};
-}
-
-function generateClinicalAdvice(result){
-  if(result.level==="Low DFU Risk") return "Plantar pressure distribution is within safe limits.";
-  if(result.level==="Moderate DFU Risk") return "Sustained pressure detected. Footwear adjustment recommended.";
-  return "High-risk plantar pressure detected! Immediate offloading advised.";
-}
-
-// ================= DATA HANDLER =================
-function addDataToChart(s1,s2){
-  const now=new Date().toLocaleTimeString();
-  const d1=pressureChart.data.datasets[0].data;
-  const d2=pressureChart.data.datasets[1].data;
-  d1.push(s1 ?? d1[d1.length-1] ?? 0);
-  d2.push(s2 ?? d2[d2.length-1] ?? 0);
-  pressureChart.data.labels.push(now);
-  if(d1.length>50){d1.shift();d2.shift();pressureChart.data.labels.shift();}
-  pressureChart.update('none');
-
-  if(d1.length>=30){
-    const features=extractFeatures(d1.slice(-30), d2.slice(-30));
-    const result=mlRiskAssessment(features);
-    document.getElementById("adviceText").innerHTML=`
-      <p><strong>Diagnosis Focus:</strong> DFU Risk</p>
-      <p><strong>Risk Level:</strong> ${result.level}</p>
-      <p><strong>Confidence:</strong> ${(result.confidence*100).toFixed(1)}%</p>
-      <p>${generateClinicalAdvice(result)}</p>
-      <p style="font-size:0.9em;">Based on last 30 readings.</p>
-    `;
-  }
-}
-
-// ================= SIMULATION =================
-setInterval(()=>{
-  if(!isBLEConnected) addDataToChart(Math.floor(Math.random()*100), Math.floor(Math.random()*100));
-},500);
 </script>
 
 </body>
