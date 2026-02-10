@@ -1,264 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>FootGuard – Diabetes Foot Monitoring</title>
+#include <ArduinoBLE.h>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+BLEService pressureService("12345678-1234-1234-1234-123456789abc"); // custom service
 
-<style>
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: #f4fbf7;
-  color: #1b3d2f;
+BLEUnsignedCharCharacteristic sensor1Char("11111111-1234-1234-1234-123456789abc", BLERead | BLENotify);
+BLEUnsignedCharCharacteristic sensor2Char("22222222-1234-1234-1234-123456789abc", BLERead | BLENotify);
+
+void setup() {
+  Serial.begin(9600);
+  BLE.begin();
+  BLE.setLocalName("FootGuard");  // Name used in Web Bluetooth filter
+  BLE.setAdvertisedService(pressureService);
+
+  pressureService.addCharacteristic(sensor1Char);
+  pressureService.addCharacteristic(sensor2Char);
+  BLE.addService(pressureService);
+
+  sensor1Char.writeValue(0);
+  sensor2Char.writeValue(0);
+
+  BLE.advertise();
+  Serial.println("BLE device active");
 }
 
-header {
-  background: linear-gradient(135deg, #1b5e20, #2e7d32);
-  color: white;
-  padding: 30px;
-  text-align: center;
-}
+void loop() {
+  BLEDevice central = BLE.central();
 
-#connectBtn {
-  font-size: 1.2rem;
-  padding: 16px 36px;
-  border-radius: 40px;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-  font-weight: bold;
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  background: #e8f5e9;
-}
-
-nav button {
-  padding: 15px 25px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-nav button.active {
-  border-bottom: 4px solid #2e7d32;
-}
-
-section {
-  display: none;
-  padding: 40px;
-  max-width: 900px;
-  margin: auto;
-}
-
-section.active {
-  display: block;
-}
-
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-}
-
-.advice {
-  background: #e8f5e9;
-  border-left: 6px solid #1b5e20;
-  padding: 20px;
-  margin-top: 20px;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <h1>FootGuard</h1>
-  <p>Personalized AI-Assisted Diabetic Foot Monitoring</p>
-
-  <button id="connectBtn" onclick="connectBLE()">🔗 Connect FootGuard Device</button>
-  <p id="status">Simulation Mode – No Device Connected</p>
-</header>
-
-<nav>
-  <button class="active" onclick="openTab('home')">Home</button>
-  <button onclick="openTab('pressure')">Plantar Pressure</button>
-  <button onclick="openTab('interpretation')">Interpretation</button>
-  <button onclick="openTab('research')">Research</button>
-  <button onclick="openTab('reviews')">Reviews</button>
-</nav>
-
-<!-- HOME -->
-<section id="home" class="active">
-  <div class="card">
-    <h2>Why Monitor Plantar Pressure in Diabetes?</h2>
-    <p>
-      In diabetic patients, peripheral neuropathy reduces pain sensation,
-      allowing prolonged high plantar pressure to go unnoticed. This is one
-      of the strongest predictors of foot ulcer formation and lower-limb
-      amputation.
-    </p>
-    <p>
-      FootGuard continuously monitors plantar pressure patterns specific
-      to <b>this patient</b>, identifying sustained mechanical stress before
-      tissue breakdown occurs.
-    </p>
-  </div>
-</section>
-
-<!-- PRESSURE GRAPH -->
-<section id="pressure">
-  <div class="card">
-    <h2>Live Plantar Pressure (kPa)</h2>
-    <canvas id="pressureChart"></canvas>
-    <p><b>Rolling Average (60s):</b> <span id="avgVal">--</span> kPa</p>
-    <p><b>90th Percentile:</b> <span id="p90Val">--</span> kPa</p>
-  </div>
-</section>
-
-<!-- INTERPRETATION -->
-<section id="interpretation">
-  <div class="card">
-    <h2>Personalized Risk Interpretation</h2>
-    <p>
-      This interpretation is generated using statistical features derived
-      from your plantar pressure data, not raw fluctuations.
-    </p>
-
-    <div id="adviceBox" class="advice">
-      Collecting sufficient data for analysis…
-    </div>
-  </div>
-</section>
-
-<!-- RESEARCH -->
-<section id="research">
-  <div class="card">
-    <h2>Scientific Background</h2>
-    <p>
-      Research consistently shows that sustained plantar pressures above
-      physiological thresholds significantly increase ulcer risk in diabetic
-      patients.
-    </p>
-    <ul>
-      <li>Lavery et al., Diabetes Care (2003)</li>
-      <li>Bus et al., Journal of Biomechanics (2016)</li>
-      <li>Armstrong et al., NEJM (2017)</li>
-    </ul>
-  </div>
-</section>
-
-<!-- REVIEWS -->
-<section id="reviews">
-  <div class="card">
-    <h2>Community Feedback</h2>
-    <p>
-      “A system like FootGuard would allow early intervention before ulcers
-      become irreversible.” — Podiatry Specialist
-    </p>
-  </div>
-</section>
-
-<script>
-let connected = false;
-let data = [];
-let labels = [];
-let lastAdviceTime = 0;
-
-const ctx = document.getElementById("pressureChart").getContext("2d");
-const chart = new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: labels,
-    datasets: [{
-      label: "Plantar Pressure (kPa)",
-      data: data,
-      borderWidth: 2,
-      tension: 0.3
-    }]
-  },
-  options: {
-    animation: false,
-    scales: { y: { beginAtZero: true } }
-  }
-});
-
-function connectBLE() {
-  connected = true;
-  document.getElementById("status").innerText =
-    "Live Mode – FootGuard Device Connected";
-}
-
-function addData() {
-  let value = connected
-    ? Math.random() * 15 + 55
-    : Math.random() * 10 + 40;
-
-  const time = new Date().toLocaleTimeString();
-  data.push(value);
-  labels.push(time);
-
-  if (data.length > 120) {
-    data.shift();
-    labels.shift();
-  }
-
-  chart.update();
-  updateStats();
-}
-
-function updateStats() {
-  if (data.length < 20) return;
-
-  const avg = data.reduce((a,b)=>a+b,0) / data.length;
-  const sorted = [...data].sort((a,b)=>a-b);
-  const p90 = sorted[Math.floor(sorted.length * 0.9)];
-
-  document.getElementById("avgVal").innerText = avg.toFixed(1);
-  document.getElementById("p90Val").innerText = p90.toFixed(1);
-
-  if (Date.now() - lastAdviceTime > 30000) {
-    generateAdvice(avg, p90);
-    lastAdviceTime = Date.now();
+  if (central) {
+    Serial.print("Connected to central: ");
+    Serial.println(central.address());
+    while (central.connected()) {
+      int s1 = analogRead(A0) / 10; // convert 0-1023 to 0-100
+      int s2 = analogRead(A1) / 10;
+      sensor1Char.writeValue(s1);
+      sensor2Char.writeValue(s2);
+      delay(500);
+    }
+    Serial.println("Central disconnected");
   }
 }
-
-function generateAdvice(avg, p90) {
-  let risk, advice;
-
-  if (p90 < 55) {
-    risk = "Low Risk";
-    advice = "Current plantar pressure distribution is within safe limits.";
-  } else if (p90 < 70) {
-    risk = "Moderate Risk";
-    advice = "Sustained pressure detected. Footwear adjustment recommended.";
-  } else {
-    risk = "High Risk";
-    advice = "Prolonged elevated pressure indicates increased ulcer risk. Offloading and clinical evaluation advised.";
-  }
-
-  document.getElementById("adviceBox").innerHTML = `
-    <h3>${risk}</h3>
-    <p>${advice}</p>
-    <p><b>Basis:</b> Rolling average and 90th percentile pressure specific to this patient.</p>
-  `;
-}
-
-function openTab(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  event.target.classList.add("active");
-}
-
-setInterval(addData, 1000);
-</script>
-
-</body>
-</html>
