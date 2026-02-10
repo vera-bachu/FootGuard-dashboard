@@ -96,7 +96,7 @@ footer { text-align:center; padding:20px; background:#2E7D32; color:white; margi
 <p><strong>Dr. Pandya:</strong> FootGuard is revolutionary. The inclusion of plantar pressure monitoring will allow patients to catch issues early.</p>
 </div>
 <div class="review-card review">
-<p><strong>Mr. Distasio:</strong> As a coach with diabetes, FootGuard gives me peace of mind on my feet every day.</p>
+<p><strong>Mr. Distasio:</strong> As a coach with diabetes, FootGuard would give me peace of mind on my feet every day.</p>
 </div>
 </div>
 </section>
@@ -238,5 +238,17 @@ async function connectBLE(){
     }
 }
 </script>
+    import tensorflow as tf
+    from tensorflow.keras import layers
+
+    model = tf.keras.Sequential([
+        layers.Dense(32, activation='relu', input_shape=(3,)),
+        layers.Dense(16, activation='relu'),
+        layers.Dense(3, activation='softmax')
+    ])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.fit(X_train, y_train, epochs=100)
+    model.save("my_model.h5")
+
 </body>
 </html>
