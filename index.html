@@ -118,6 +118,56 @@ body {
 
 .subtitle { color: var(--fg-text-soft); margin-top: 8px; }
 
+.grid { display: grid; gap: 18px; }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+.stat-card {
+    background: #ffffff;
+    border-radius: var(--fg-radius-md);
+    padding: 18px 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--fg-border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label { font-size: 0.85rem; color: var(--fg-text-soft); }
+.stat-value { font-size: 1.8rem; font-weight: 700; }
+.stat-value.warning { color: #e67e22; }
+.stat-value.success { color: #27ae60; }
+.stat-sub { font-size: 0.8rem; color: var(--fg-text-soft); }
+
+.image-shell { margin-top: 24px; }
+.image-placeholder {
+    border-radius: var(--fg-radius-md);
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    padding: 26px;
+    text-align: center;
+    font-size: 0.92rem;
+    color: var(--fg-text-soft);
+    background: linear-gradient(135deg, #ffffff 0%, #eef3ff 100%);
+}
+
+.feature-card { background: #ffffff; border-radius: var(--fg-radius-md); padding: 20px 20px 18px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05); }
+.feature-card h3 { margin-top: 0; }
+
+.highlight-panel { margin-top: 22px; border-radius: var(--fg-radius-md); padding: 18px 20px 16px; background: linear-gradient(120deg, rgba(46, 204, 113, 0.08), rgba(52, 152, 219, 0.08)); }
+
+.styled-list { padding-left: 20px; }
+.styled-list li { margin-bottom: 6px; }
+
+.symptom-panel { background: #ffffff; border-radius: var(--fg-radius-md); padding: 20px; }
+.tag-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 5px 12px; border-radius: var(--fg-radius-pill); font-size: 0.8rem; border: 1px solid rgba(0, 0, 0, 0.06); background: #ffffff; }
+.chip-warning { border-color: #f39c12; color: #f39c12; }
+.chip-neutral { border-color: #95a5a6; color: #7f8c8d; }
+.chip-critical { border-color: #e74c3c; color: #e74c3c; }
+
+.timeline { display: grid; gap: 16px; margin-top: 10px; }
+.timeline-item { padding: 16px 18px; border-radius: var(--fg-radius-md); background: #ffffff; border-left: 4px solid var(--fg-secondary); }
+
 .monitoring-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: 18px; margin-top: 18px; }
 .chart-shell { background: #ffffff; border-radius: var(--fg-radius-md); padding: 12px 16px 16px; min-height: 300px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05); }
 
@@ -152,7 +202,10 @@ body {
     box-shadow: 0 12px 30px rgba(0,0,0,0.05);
 }
 
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 @media (max-width: 768px) {
     .fg-header-inner { flex-direction: column; align-items: flex-start; }
@@ -183,66 +236,133 @@ body {
 </nav>
 
 <main class="fg-main">
+    <!-- Overview -->
+    <section id="overview" class="card active">
+        <h2>The Importance of Monitoring</h2>
+        <p>
+            Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation
+            worldwide. Early detection of pressure hotspots and subtle skin changes can
+            dramatically reduce complications.
+        </p>
+    </section>
 
-<!-- Overview -->
-<section id="overview" class="card active">
-<h2>Understanding Diabetic Foot Ulcers</h2>
-<p>Diabetic Foot Ulcers (DFUs) are chronic wounds that occur in patients with diabetes due to neuropathy and impaired circulation. They are a major cause of hospitalization and lower-limb amputations worldwide. Early detection and preventive care are critical to improving patient outcomes.</p>
-<p>DFUs often develop in areas of high pressure on the plantar surface of the foot. Small injuries or friction can lead to severe ulcers when unnoticed, especially for patients with reduced sensation. Monitoring these pressure zones can prevent escalation and infection.</p>
-<p>Education for patients and clinicians is essential. Proper foot care, daily inspection, and timely medical interventions significantly reduce the risk of complications. Digital monitoring solutions, like FootGuard, help bridge the gap between patient awareness and clinical supervision.</p>
-</section>
+    <!-- Design -->
+    <section id="design" class="card">
+        <h2>Device & System Design</h2>
+        <p>
+            The FootGuard device integrates pressure sensors, wireless communication, and an
+            AI-based risk assessment engine into a single, clinician-friendly platform.
+        </p>
+    </section>
 
-<!-- Design -->
-<section id="design" class="card">
-<h2>FootGuard Device Design</h2>
-<p>The FootGuard system integrates smart pressure sensors into wearable insoles that communicate wirelessly with a cloud-based AI system. It continuously measures plantar pressure and identifies high-risk areas, sending real-time alerts to clinicians.</p>
-<p>The AI engine uses machine learning to predict ulcer formation based on patterns detected in pressure data, gait, and historical patient records. This allows clinicians to intervene proactively rather than reactively, minimizing risk and reducing healthcare costs.</p>
-<p>The device is designed with usability in mind, including battery longevity, patient comfort, and seamless integration with electronic health records. Its modular design allows for customization based on individual patient risk factors.</p>
-</section>
+    <!-- Symptoms -->
+    <section id="symptoms" class="card">
+        <h2>Symptoms of DFUs</h2>
+        <p>Redness, swelling, sores, numbness, and callus formation are early indicators.</p>
+    </section>
 
-<!-- Symptoms -->
-<section id="symptoms" class="card">
-<h2>Recognizing DFU Symptoms</h2>
-<p>Early symptoms of DFUs include redness, swelling, numbness, tingling, or small skin cracks. Callus formation often indicates increased pressure areas, which can precede ulceration.</p>
-<p>Advanced ulcers may exhibit drainage, odor, or infection, and may cause severe pain. Patients with neuropathy might not notice these symptoms, highlighting the importance of regular monitoring and professional evaluation.</p>
-<p>Clinicians should educate patients on warning signs, encourage daily inspection, and advise on protective footwear. Early recognition combined with preventive interventions can dramatically reduce the severity of complications.</p>
-</section>
+    <!-- Treatments -->
+    <section id="treatments" class="card">
+        <h2>Types of Treatment</h2>
+        <p>Wound care, offloading footwear, antibiotics, and surgery are typical interventions.</p>
+    </section>
 
-<!-- Treatments -->
-<section id="treatments" class="card">
-<h2>DFU Treatments & Interventions</h2>
-<p>Treatment depends on ulcer severity and patient health. Common interventions include debridement, antibiotic therapy, pressure offloading via specialized footwear, and wound dressings designed for moisture balance and healing.</p>
-<p>Advanced cases may require surgical intervention, including minor amputations or reconstructive procedures to prevent further damage. Multidisciplinary care, including podiatrists, endocrinologists, and nurses, improves outcomes.</p>
-<p>Prevention remains key. Patient education, glucose management, routine foot exams, and regular use of monitoring devices help reduce the likelihood of ulcer formation and the need for intensive treatments.</p>
-</section>
+    <!-- Monitoring -->
+    <section id="monitoring" class="card">
+        <h2>Live Monitoring & ML Risk Prediction</h2>
+        <div class="chart-shell">
+            <canvas id="pressureChart"></canvas>
+        </div>
+        <div class="monitoring-side">
+            <div class="metric-card">
+                <span class="metric-label">Current Risk Level</span>
+                <span id="riskLevel" class="metric-value success">Low</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">Alerts in last 24h</span>
+                <span id="alertsCount" class="metric-value">0</span>
+            </div>
+            <button class="primary-btn connect-btn" onclick="simulateML()">Simulate ML Prediction</button>
+        </div>
+    </section>
 
-<!-- Monitoring -->
-<section id="monitoring" class="card">
-<h2>Live Monitoring & Risk Prediction</h2>
-<p>FootGuard continuously tracks plantar pressure across multiple zones of the foot. The system generates a real-time trend chart and calculates risk scores based on accumulated data.</p>
-<p>Alerts are generated when pressure exceeds safe thresholds or abnormal patterns emerge. Clinicians can respond to early warning signals, preventing ulcer development and enabling timely interventions.</p>
-<p>The AI-based prediction engine evaluates historical and current data to categorize risk as Low, Medium, or High. This personalized feedback guides clinical decisions, improving patient outcomes and safety.</p>
-<div class="monitoring-grid">
-<div class="chart-shell">
-<canvas id="pressureChart"></canvas>
+    <!-- Advice -->
+    <section id="advice" class="card">
+        <h2>Clinical Advice</h2>
+        <div class="advice-panel">
+            <h3>Routine Foot Examinations</h3>
+            <p>Inspect skin, nails, and pressure zones at every visit.</p>
+        </div>
+    </section>
+</main>
 </div>
-<div class="monitoring-side">
-<div class="metric-card">
-<span class="metric-label">Current Risk Level</span>
-<span id="riskLevel" class="metric-value success">Low</span>
-</div>
-<div class="metric-card">
-<span class="metric-label">Alerts in last 24h</span>
-<span id="alertsCount" class="metric-value">0</span>
-</div>
-<button class="primary-btn connect-btn" onclick="simulateML()">Simulate ML Prediction</button>
-</div>
-</div>
-</section>
 
-<!-- Advice -->
-<section id="advice" class="card">
-<h2>Clinical Advice</h2>
-<div class="advice-panel">
-<p>Routine foot examinations are essential for early detection of DFUs. Inspect skin, nails, and pressure zones during every patient visit.</p>
-<p>Educate patients about daily self-inspection and proper f
+<script>
+// Navigation
+const tabs = document.querySelectorAll(".nav-btn");
+const sections = document.querySelectorAll(".card");
+let pressureChartInstance = null;
+
+function showSection(targetId) {
+    tabs.forEach(btn => btn.classList.remove("active"));
+    sections.forEach(sec => sec.classList.remove("active"));
+    document.querySelector(`.nav-btn[data-target="${targetId}"]`).classList.add("active");
+    document.getElementById(targetId).classList.add("active");
+    if(targetId === "monitoring") initPressureChart();
+}
+
+// Initialize Chart with random data
+function initPressureChart() {
+    const ctx = document.getElementById("pressureChart");
+    if(!ctx) return;
+    if(pressureChartInstance) pressureChartInstance.destroy();
+    
+    const dataPoints = Array.from({length:6},()=>Math.floor(Math.random()*20)+10);
+
+    pressureChartInstance = new Chart(ctx, {
+        type:"line",
+        data:{
+            labels:["0s","10s","20s","30s","40s","50s"],
+            datasets:[{
+                label:"Plantar Pressure (kPa)",
+                data: dataPoints,
+                borderColor:"rgba(46, 204, 113, 1)",
+                backgroundColor:"rgba(46, 204, 113, 0.15)",
+                tension:0.3,
+                pointRadius:3
+            }]
+        },
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{
+                title:{
+                    display:true,
+                    text:"Live Plantar Pressure Trend"
+                }
+            },
+            scales:{y:{beginAtZero:true}}
+        }
+    });
+
+    // Update alerts count
+    document.getElementById("alertsCount").textContent = dataPoints.filter(d=>d>15).length;
+}
+
+// Simulate ML risk prediction
+function simulateML() {
+    const levels=["Low","Medium","High"];
+    const colors=["success","warning","warning"];
+    const idx=Math.floor(Math.random()*levels.length);
+    const el=document.getElementById("riskLevel");
+    el.textContent = levels[idx];
+    el.className = `metric-value ${colors[idx]}`;
+}
+
+tabs.forEach(tab => tab.addEventListener("click",()=>showSection(tab.dataset.target)));
+
+// Default
+showSection("overview");
+</script>
+</body>
+</html>
