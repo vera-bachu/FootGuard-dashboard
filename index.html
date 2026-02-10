@@ -19,7 +19,6 @@
     --fg-radius-pill: 999px;
     --fg-text-main: #2c3e50;
     --fg-text-soft: #6b7b8c;
-    --fg-border-subtle: rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -31,9 +30,9 @@ body {
 
 .fg-header {
     background: #fff;
-    padding: 30px;
+    padding: 20px 30px;
     border-bottom: 4px solid var(--fg-primary);
-    box-shadow: var(--fg-shadow-soft);
+    box-shadow: 0 18px 45px rgba(31, 38, 135, 0.16);
 }
 
 .fg-header-inner {
@@ -41,14 +40,30 @@ body {
     margin: auto;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-.pill {
-    background: rgba(46,204,113,.1);
-    color: var(--fg-primary-dark);
-    padding: 8px 18px;
-    border-radius: var(--fg-radius-pill);
+.fg-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 0;
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(10px);
+}
+
+.nav-btn {
+    border-radius: 999px;
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 10px 20px;
+    cursor: pointer;
     font-weight: 600;
+}
+
+.nav-btn.active {
+    background: var(--fg-primary);
+    color: #fff;
 }
 
 .fg-main {
@@ -62,6 +77,11 @@ body {
     border-radius: var(--fg-radius-lg);
     padding: 26px;
     margin-top: 20px;
+    display: none;
+}
+
+.card.active {
+    display: block;
 }
 
 .monitoring-grid {
@@ -90,13 +110,15 @@ body {
 .primary-btn {
     width: 100%;
     padding: 12px;
-    border-radius: var(--fg-radius-pill);
+    border-radius: 999px;
     border: none;
     background: var(--fg-primary);
     color: #fff;
     font-weight: 600;
     cursor: pointer;
 }
+
+ul { margin-top: 0; }
 </style>
 </head>
 
@@ -112,116 +134,164 @@ body {
     </div>
 </header>
 
+<nav class="fg-nav">
+    <button class="nav-btn active" data-target="overview">Overview</button>
+    <button class="nav-btn" data-target="monitoring">Live Monitoring</button>
+    <button class="nav-btn" data-target="advice">Clinical Advice</button>
+    <button class="nav-btn" data-target="symptoms">Symptoms</button>
+    <button class="nav-btn" data-target="footguard">Foot Guard Tips</button>
+</nav>
+
 <main class="fg-main">
 
-<section id="overview" class="card">
-   <section id="why-monitor">
+<!-- ================= OVERVIEW ================= -->
+<section id="overview" class="card active">
   <h2>Why Monitor Diabetic Foot Ulcer Disease?</h2>
 
-    <p><strong>Silent Damage:</strong></p>
-    <p>
-      Many people with diabetes experience neuropathy, which reduces sensation in the feet.
-      This means tissue damage can occur without pain or noticeable warning signs.
-    </p>
+  <p><strong>Silent Damage:</strong></p>
+  <p>
+    Many people with diabetes experience neuropathy, which reduces sensation in the feet.
+    This means tissue damage can occur without pain or noticeable warning signs.
+  </p>
 
-    <p><strong>Pressure Causes Ulcers Before Wounds Appear:</strong></p>
-    <p>
-      Repeated high plantar pressure breaks down tissue internally.
-      By the time a wound becomes visible, severe damage may already exist beneath the skin.
-    </p>
-    <p><strong>Early Detection Prevents Complications:</strong></p>
-    <ul>
-      <li>Allows early pressure redistribution</li>
-      <li>Prevents infections and hospitalizations</li>
-      <li>Reduces the risk of chronic wounds</li>
-    </ul>
+  <p><strong>Pressure Causes Ulcers Before Wounds Appear:</strong></p>
+  <p>
+    Repeated high plantar pressure breaks down tissue internally.
+    By the time a wound becomes visible, severe damage may already exist beneath the skin.
+  </p>
 
-    <p><strong>Prevention of Amputation:</strong></p>
-    <p>
-      Diabetic foot ulcers are a leading cause of lower-limb amputations.
-      Continuous monitoring significantly lowers this risk.
-    </p>
-  
-    <p><strong>Improved Quality of Life:</strong></p>
-    <p>
-      Monitoring helps patients maintain mobility, independence,
-      and overall health by preventing long-term complications.
-    </p>
+  <p><strong>Early Detection Prevents Complications:</strong></p>
+  <ul>
+    <li>Allows early pressure redistribution</li>
+    <li>Prevents infections and hospitalizations</li>
+    <li>Reduces the risk of chronic wounds</li>
+  </ul>
 
-    <p><strong>Data-Driven Care:</strong></p>
-    <p>
-      Real-time monitoring enables personalized treatment plans and more informed 
-      clinical decisions based on objective pressure data.
-    </p>
+  <p><strong>Prevention of Amputation:</strong></p>
+  <p>
+    Diabetic foot ulcers are a leading cause of lower-limb amputations.
+    Continuous monitoring significantly lowers this risk.
+  </p>
+
+  <p><strong>Improved Quality of Life:</strong></p>
+  <p>
+    Monitoring helps patients maintain mobility, independence,
+    and overall health by preventing long-term complications.
+  </p>
+
+  <p><strong>Data-Driven Care:</strong></p>
+  <p>
+    Real-time monitoring enables personalized treatment plans and more informed 
+    clinical decisions based on objective pressure data.
+  </p>
 
   <h2>About FootGuard</h2>
 
-  <div class="advice">
-    <p><strong>What Is FootGuard?</strong></p>
-    <p>
-      FootGuard is a preventive health monitoring system designed to reduce the risk
-      of diabetic foot ulcers by tracking plantar pressure patterns in real time.
-      It focuses on early detection rather than reactive treatment.
-    </p>
- 
-    <p><strong>How FootGuard Works:</strong></p>
-    <ul>
-      <li>Monitors pressure distribution across the foot</li>
-      <li>Identifies sustained high-pressure zones</li>
-      <li>Flags areas at risk for tissue breakdown</li>
-      <li>Provides clear, actionable feedback</li>
-    </ul>
- 
-    <p><strong>Why FootGuard Matters:</strong></p>
-    <p>
-      Because many diabetic patients cannot feel pain due to neuropathy,
-      FootGuard acts as an early warning system, detecting harmful pressure
-      before ulcers, infections, or irreversible damage occur.
-    </p>
+  <p><strong>What Is FootGuard?</strong></p>
+  <p>
+    FootGuard is a preventive health monitoring system designed to reduce the risk
+    of diabetic foot ulcers by tracking plantar pressure patterns in real time.
+    It focuses on early detection rather than reactive treatment.
+  </p>
 
-    <p><strong>Impact on Patient Care:</strong></p>
-    <ul>
-      <li>Supports early intervention and prevention</li>
-      <li>Reduces risk of hospitalization and amputation</li>
-      <li>Improves long-term mobility and independence</li>
-    </ul>
+  <p><strong>How FootGuard Works:</strong></p>
+  <ul>
+    <li>Monitors pressure distribution across the foot</li>
+    <li>Identifies sustained high-pressure zones</li>
+    <li>Flags areas at risk for tissue breakdown</li>
+    <li>Provides clear, actionable feedback</li>
+  </ul>
+
+  <p><strong>Why FootGuard Matters:</strong></p>
+  <p>
+    Because many diabetic patients cannot feel pain due to neuropathy,
+    FootGuard acts as an early warning system, detecting harmful pressure
+    before ulcers, infections, or irreversible damage occur.
+  </p>
+
+  <p><strong>Impact on Patient Care:</strong></p>
+  <ul>
+    <li>Supports early intervention and prevention</li>
+    <li>Reduces risk of hospitalization and amputation</li>
+    <li>Improves long-term mobility and independence</li>
+  </ul>
+</section>
+
+<!-- ================= LIVE MONITORING ================= -->
+<section id="monitoring" class="card">
+  <h2>Live Plantar Pressure</h2>
+
+  <div class="monitoring-grid">
+      <div class="chart-shell">
+          <canvas id="pressureChart"></canvas>
+      </div>
+
+      <div>
+          <div class="metric-card">
+              <span>Current Risk</span>
+              <span id="riskLevel" class="metric-value warning">Low</span>
+          </div>
+
+          <div class="metric-card">
+              <span>Confidence</span>
+              <span id="riskConfidence" class="metric-value">—</span>
+          </div>
+
+          <button class="primary-btn" onclick="connectDevice()">Connect Device</button>
+      </div>
   </div>
 </section>
 
-<section id="monitoring" class="card">
-    <h2>Live Plantar Pressure</h2>
-
-    <div class="monitoring-grid">
-        <div class="chart-shell">
-            <canvas id="pressureChart"></canvas>
-        </div>
-
-        <div>
-            <div class="metric-card">
-                <span>Current Risk</span>
-                <span id="riskLevel" class="metric-value warning">Low</span>
-            </div>
-
-            <div class="metric-card">
-                <span>Confidence</span>
-                <span id="riskConfidence" class="metric-value">—</span>
-            </div>
-
-            <button class="primary-btn" onclick="connectDevice()">Connect Device</button>
-        </div>
-    </div>
+<!-- ================= CLINICAL ADVICE ================= -->
+<section id="advice" class="card">
+  <h2>Clinical Interpretation</h2>
+  <div id="adviceText">
+      Waiting for telemetry…
+  </div>
 </section>
 
-<section id="advice" class="card">
-    <h2>Clinical Interpretation</h2>
-    <div id="adviceText">
-        Waiting for telemetry…
-    </div>
+<!-- ================= SYMPTOMS ================= -->
+<section id="symptoms" class="card">
+  <h2>Symptoms of Foot Ulcers</h2>
+  <ul>
+      <li>Redness or swelling on the foot</li>
+      <li>Open sores or wounds</li>
+      <li>Drainage or pus</li>
+      <li>Discoloration of toes or skin</li>
+      <li>Persistent pain or discomfort</li>
+      <li>Thickened toenails or fungal infections</li>
+  </ul>
+</section>
+
+<!-- ================= FOOT GUARD TIPS ================= -->
+<section id="footguard" class="card">
+  <h2>Foot Guard Tips</h2>
+  <ul>
+      <li>Check your feet daily for cuts, blisters, or redness</li>
+      <li>Wear well-fitting shoes with cushioning</li>
+      <li>Keep feet clean and dry</li>
+      <li>Use FootGuard monitoring regularly</li>
+      <li>Avoid walking barefoot</li>
+      <li>Consult your doctor at first sign of skin breakdown</li>
+  </ul>
 </section>
 
 </main>
 
 <script>
+/* ================= NAVIGATION ================= */
+const tabs = document.querySelectorAll(".nav-btn");
+const cards = document.querySelectorAll(".card");
+
+tabs.forEach(tab => {
+    tab.onclick = () => {
+        tabs.forEach(t=>t.classList.remove("active"));
+        cards.forEach(c=>c.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.target).classList.add("active");
+    };
+});
+
 /* ================= CHART ================= */
 const ctx = document.getElementById("pressureChart").getContext("2d");
 const pressureChart = new Chart(ctx, {
@@ -244,7 +314,7 @@ const pressureChart = new Chart(ctx, {
     }
 });
 
-let connected = true; // simulation starts automatically
+let connected = false;
 
 function extractFeatures(a, b) {
     const avg = a.map((v,i)=>(v+b[i])/2);
