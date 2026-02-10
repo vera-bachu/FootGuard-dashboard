@@ -114,181 +114,40 @@ body {
 
 <main class="fg-main">
 
-<!-- ================= OVERVIEW ================= -->
 <section id="overview" class="card">
+   <section id="why-monitor">
   <h2>Why Monitor Diabetic Foot Ulcer Disease?</h2>
 
-  <p><strong>Silent Damage:</strong></p>
-  <p>
-    Many people with diabetes experience neuropathy, which reduces sensation in the feet.
-    This means tissue damage can occur without pain or noticeable warning signs.
-  </p>
+    <p><strong>Silent Damage:</strong></p>
+    <p>
+      Many people with diabetes experience neuropathy, which reduces sensation in the feet.
+      This means tissue damage can occur without pain or noticeable warning signs.
+    </p>
 
-  <p><strong>Pressure Causes Ulcers Before Wounds Appear:</strong></p>
-  <p>
-    Repeated high plantar pressure breaks down tissue internally.
-    By the time a wound becomes visible, severe damage may already exist beneath the skin.
-  </p>
+    <p><strong>Pressure Causes Ulcers Before Wounds Appear:</strong></p>
+    <p>
+      Repeated high plantar pressure breaks down tissue internally.
+      By the time a wound becomes visible, severe damage may already exist beneath the skin.
+    </p>
+    <p><strong>Early Detection Prevents Complications:</strong></p>
+    <ul>
+      <li>Allows early pressure redistribution</li>
+      <li>Prevents infections and hospitalizations</li>
+      <li>Reduces the risk of chronic wounds</li>
+    </ul>
 
-  <p><strong>Early Detection Prevents Complications:</strong></p>
-  <ul>
-    <li>Allows early pressure redistribution</li>
-    <li>Prevents infections and hospitalizations</li>
-    <li>Reduces the risk of chronic wounds</li>
-  </ul>
+    <p><strong>Prevention of Amputation:</strong></p>
+    <p>
+      Diabetic foot ulcers are a leading cause of lower-limb amputations.
+      Continuous monitoring significantly lowers this risk.
+    </p>
+  
+    <p><strong>Improved Quality of Life:</strong></p>
+    <p>
+      Monitoring helps patients maintain mobility, independence,
+      and overall health by preventing long-term complications.
+    </p>
 
-  <p><strong>Prevention of Amputation:</strong></p>
-  <p>
-    Diabetic foot ulcers are a leading cause of lower-limb amputations.
-    Continuous monitoring significantly lowers this risk.
-  </p>
-
-  <p><strong>Improved Quality of Life:</strong></p>
-  <p>
-    Monitoring helps patients maintain mobility, independence,
-    and overall health by preventing long-term complications.
-  </p>
-
-  <p><strong>Data-Driven Care:</strong></p>
-  <p>
-    Real-time monitoring enables personalized treatment plans and more informed 
-    clinical decisions based on objective pressure data.
-  </p>
-
-  <h2>About FootGuard</h2>
-
-  <p><strong>What Is FootGuard?</strong></p>
-  <p>
-    FootGuard is a preventive health monitoring system designed to reduce the risk
-    of diabetic foot ulcers by tracking plantar pressure patterns in real time.
-    It focuses on early detection rather than reactive treatment.
-  </p>
-
-  <p><strong>How FootGuard Works:</strong></p>
-  <ul>
-    <li>Monitors pressure distribution across the foot</li>
-    <li>Identifies sustained high-pressure zones</li>
-    <li>Flags areas at risk for tissue breakdown</li>
-    <li>Provides clear, actionable feedback</li>
-  </ul>
-
-  <p><strong>Why FootGuard Matters:</strong></p>
-  <p>
-    Because many diabetic patients cannot feel pain due to neuropathy,
-    FootGuard acts as an early warning system, detecting harmful pressure
-    before ulcers, infections, or irreversible damage occur.
-  </p>
-
-  <p><strong>Impact on Patient Care:</strong></p>
-  <ul>
-    <li>Supports early intervention and prevention</li>
-    <li>Reduces risk of hospitalization and amputation</li>
-    <li>Improves long-term mobility and independence</li>
-  </ul>
-</section>
-
-<!-- ================= LIVE MONITORING ================= -->
-<section id="monitoring" class="card">
-  <h2>Live Plantar Pressure</h2>
-
-  <div class="monitoring-grid">
-      <div class="chart-shell">
-          <canvas id="pressureChart"></canvas>
-      </div>
-
-      <div>
-          <div class="metric-card">
-              <span>Current Risk</span>
-              <span id="riskLevel" class="metric-value warning">Low</span>
-          </div>
-
-          <div class="metric-card">
-              <span>Confidence</span>
-              <span id="riskConfidence" class="metric-value">—</span>
-          </div>
-
-          <button class="primary-btn" onclick="connectDevice()">Connect Device</button>
-      </div>
-  </div>
-</section>
-
-<!-- ================= CLINICAL ADVICE ================= -->
-<section id="advice" class="card">
-  <h2>Clinical Interpretation</h2>
-  <div id="adviceText">
-      Waiting for telemetry…
-  </div>
-</section>
-
-</main>
-
-<script>
-/* ================= CHART ================= */
-const ctx = document.getElementById("pressureChart").getContext("2d");
-const pressureChart = new Chart(ctx, {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [
-            { label: "Medial Sensor", data: [], borderColor: "#3498db", tension: 0.4 },
-            { label: "Lateral Sensor", data: [], borderColor: "#e74c3c", tension: 0.4 }
-        ]
-    },
-    options: {
-        responsive: true,
-        animation: false,
-        plugins: { legend: { display: true } },
-        scales: { 
-            y: { min: 0, max: 100, title: { display: true, text: 'Pressure (%)' } },
-            x: { title: { display: true, text: 'Time' } } 
-        }
-    }
-});
-
-let connected = true; // simulation starts automatically
-
-function extractFeatures(a, b) {
-    const avg = a.map((v,i)=>(v+b[i])/2);
-    return {
-        mean: avg.reduce((x,y)=>x+y,0)/avg.length,
-        p90: [...avg].sort((x,y)=>x-y)[Math.floor(avg.length*0.9)],
-        imbalance: Math.abs(a[a.length-1]-b[b.length-1])
-    };
-}
-
-function assessRisk(f) {
-    let score = 0;
-    if (f.mean > 55) score++;
-    if (f.p90 > 70) score += 2;
-    if (f.imbalance > 20) score++;
-
-    if (score <= 1) return { level:"Low", conf:0.9, msg:"Pressure within safe limits." };
-    if (score === 2) return { level:"Moderate", conf:0.87, msg:"Sustained pressure detected." };
-    return { level:"High", conf:0.93, msg:"Immediate offloading recommended." };
-}
-
-function pushData() {
-    if (!connected) return;
-
-    const s1 = Math.random()*100;
-    const s2 = Math.random()*100;
-
-    pressureChart.data.labels.push(new Date().toLocaleTimeString());
-    pressureChart.data.datasets[0].data.push(s1);
-    pressureChart.data.datasets[1].data.push(s2);
-
-    if (pressureChart.data.labels.length > 50) {
-        pressureChart.data.labels.shift();
-        pressureChart.data.datasets.forEach(d=>d.data.shift());
-    }
-
-    pressureChart.update();
-
-    if (pressureChart.data.datasets[0].data.length >= 30) {
-        const f = extractFeatures(
-            pressureChart.data.datasets[0].data.slice(-30),
-            pressureChart.data.datasets[1].data.slice(-30)
-        );
-
-        const r = assessRisk(f);
-        document.getElementById("
+    <p><strong>Data-Driven Care:</strong></p>
+    <p>
+      Real-time monitoring enables personalized treatment plans and more informed 
