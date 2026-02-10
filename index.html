@@ -1,38 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>FootGuard Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --fg-primary: #2ecc71;
-            --fg-primary-dark: #27ae60;
-            --fg-secondary: #3498db;
-            --fg-accent: #f39c12;
-            --fg-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --fg-card-bg: rgba(255, 255, 255, 0.96);
-            --fg-shadow-soft: 0 18px 45px rgba(31, 38, 135, 0.16);
-            --fg-radius-lg: 22px;
-            --fg-radius-md: 16px;
-            --fg-radius-pill: 999px;
-            --fg-text-main: #2c3e50;
-            --fg-text-soft: #6b7b8c;
-            --fg-border-subtle: rgba(0, 0, 0, 0.05);
-        }
+<meta charset="UTF-8">
+<title>FootGuard Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --primary: #2ecc71;
+  --primary-dark: #27ae60;
+  --secondary: #3498db;
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-gradient);
+  margin:0;
+  padding:0;
+  color:#2c3e50;
+}
+header {
+  background:white;
+  padding:40px 20px;
+  text-align:center;
+  border-bottom:4px solid var(--primary);
+  box-shadow: var(--shadow);
+}
+header h1 { margin:0; font-size:2.5em; }
+header p { margin:5px 0 0; opacity:0.8; }
 
-        body {
-            margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: var(--fg-bg-gradient);
-            color: var(--fg-text-main);
-        }
+nav {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:20px;
+  position:sticky;
+  top:0;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(10px);
+  z-index:100;
+}
+nav button {
+  background:white;
+  border:1px solid #ddd;
+  padding:12px 25px;
+  border-radius:50px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
+}
+nav button.active {
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
+}
 
-        .fg-root {
-            min-height: 100vh;
-        }
+section {
+  display:none;
+  padding:40px;
+  max-width:1000px;
+  margin:30px auto;
+  background:var(--card-bg);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+section.active { display:block; }
 
-        .fg-header {
-            background: #ffffff;
-            padding: 32px 24px;
-            border-bottom: 4px solid var(--fg-primary
+h2 { border-left:5px solid var(--primary); padding-left:15px; margin-bottom:25px; }
+
+.chart-container {
+  width:100%;
+  height:400px;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.connect-btn {
+  padding:15px 40px;
+  font-size:16px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  margin:15px 0;
+}
+.connect-btn:hover { background:var(--primary-dark); }
+
+.advice {
+  background:white;
+  padding:25px;
+  border-left:8px solid var(--secondary);
+  border-radius:15px;
+  margin-top:20px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FootGuard</h1>
+  <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-target="overview">Overview</button>
+  <button class="tab-btn" data-target="design">Design</button>
+  <button class="tab-btn" data-target="symptoms">Symptoms</button>
+  <button class="tab-btn" data-target="treatment">Types of Treatment</button>
+  <button class="tab-btn" data-target="monitoring">Live Monitoring</button>
+  <button class="tab-btn" data-target="advice">Clinical Advice</button>
+</nav>
+
+<!-- Overview -->
+<section id="overview" class="active">
+  <h2>The Importance of Monitoring</h2>
+  <p>Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide...</p>
+  <img src="data:image/jpeg;base64,/9j/4AA..." style="display:block; margin: 0 auto; max-width:100%;" alt="FootGuard Diagram">
+</section>
+
+<!-- Design -->
+<section id="design">
+  <h2>Device Design</h2>
+  <p>The FootGuard device integrates pressure sensors, wireless communication, and an AI-based risk assessment algorithm...</p>
+</section>
+
+<!-- Symptoms -->
+<section id="symptoms">
+  <h2>Symptoms of DFUs</h2>
+  <ul>
+    <li>Redness or swelling in the foot</li>
+    <li>Open sores or wounds that are slow to heal</li>
+    <li>Pain, tingling, or numbness in the foot</li>
+    <li>Discoloration or skin changes</li>
+  </ul>
+</section>
+
+<!-- Types of Treatment -->
+<section id="treatment">
+  <h2>Types of Treatment</h2>
+  <ul>
+    <li>Wound care and dressings</li>
+    <li>Offloading pressure with specialized footwear</li>
+    <li>Antibiotic therapy for infections</li>
+    <li>Surgical intervention in severe cases</li>
+  </ul>
+</section>
+
+<!-- Live Monitoring -->
+<section id="monitoring">
+  <h2>Live Monitoring</h2>
+  <div class="chart-container">
+    <canvas id="pressureChart"></canvas>
+  </div>
+  <button class="connect-btn">Connect Device</button>
+</section>
+
+<!-- Clinical Advice -->
+<section id="advice">
+  <h2>Clinical Advice</h2>
+  <div class="advice">
+    <p>Regular foot examinations are essential to prevent DFU progression...</p>
+  </div>
+</section>
+
+<script>
+// Tab functionality
+const tabs = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('section');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    // Remove active from all tabs & sections
+    tabs.forEach(t => t.classList.remove('active'));
+    sections.forEach(s => s.classList.remove('active'));
+    // Activate clicked tab and target section
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.target).classList.add('active');
+  });
+});
+
+// Example Chart.js chart for Live Monitoring
+const ctx = document.getElementById('pressureChart').getContext('2d');
+const pressureChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['0s','10s','20s','30s','40s'],
+    datasets: [{
+      label: 'Plantar Pressure',
+      data: [12, 15, 13, 17, 16],
+      borderColor: 'rgba(46, 204, 113, 1)',
+      backgroundColor: 'rgba(46, 204, 113, 0.2)',
+      tension: 0.3
+    }]
+  },
+  options: { responsive:true, maintainAspectRatio:false }
+});
+</script>
+
+</body>
+</html>
