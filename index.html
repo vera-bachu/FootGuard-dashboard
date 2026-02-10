@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FootGuard Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f7f9; margin:0; padding:0; color:#333; }
+header { background:#4CAF50; color:white; padding:20px; text-align:center; }
+nav { display:flex; justify-content:center; background:#2E7D32; }
+nav button { background:#2E7D32; border:none; padding:12px 20px; color:white; cursor:pointer; font-size:16px; }
+nav button.active { background:#66BB6A; }
+section { display:none; padding:30px; max-width:900px; margin:auto; }
+section.active { display:block; }
+h2 { color:#2E7D32; }
+.chart-container { width:100%; height:400px; margin-top:20px; }
+.connect-btn { padding:12px 25px; font-size:16px; background:#4CAF50; color:white; border:none; cursor:pointer; margin-top:10px; }
+p { line-height:1.5em; font-size:1.1em; }
+.advice { background:#e3f2fd; padding:15px; margin-top:20px; border-left:5px solid #2196F3; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>FootGuard Dashboard</h1>
+</header>
+
+<nav>
+<button class="tab-btn active" data-target="landing">Why Monitor?</button>
+<button class="tab-btn" data-target="pressure">Plantar Pressure</button>
+<button class="tab-btn" data-target="interpretation">Interpretation & Advice</button>
+</nav>
+
+<section id="landing" class="active">
+<h2>Why Monitoring Plantar Pressure Matters for Diabetes</h2>
+<p>
+Patients with diabetes often suffer from neuropathy and poor circulation, which can prevent them from feeling high-pressure points on their feet. Persistent high pressure may cause ulcers, infections, or amputations.
+</p>
+<p>
+Monitoring plantar pressure allows for early detection of risky areas. FootGuard provides real-time alerts to help prevent foot injuries, improving safety and quality of life.
+</p>
+</section>
+
+<section id="pressure">
+<h2>Live Plantar Pressure Data</h2>
+<button class="connect-btn" onclick="connectBLE()">Connect to Arduino Nano 33 BLE</button>
+<div class="chart-container">
+<canvas id="pressureChart"></canvas>
+</div>
+</section>
+
+<section id="interpretation">
+<h2>Interpretation & Patient Advice</h2>
+<div id="adviceText" class="advice">
+<p>No data yet. Connect to the Arduino to see live readings and advice.</p>
+</div>
+</section>
+
+<script>
+// TAB NAVIGATION
+const tabs = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('section');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById(tab.dataset.target).classList.add('active');
+  });
+});
+
+// CHART.JS SETUP
+const ctx = document.getElementById('pressureChart').getContext('2d');
+const pressureChart = new Chart(ctx, {
+  type:'line',
+  data:{
+    labels:[],
+    datasets:[
+      {label:'Sensor 1', borderColor:'rgba(75,192,192,1)', backgroundColor:'rgba(75,192,192,0.2)', data:[], tension:0.3},
+      {label:'Sensor 2', borderColor:'rgba(255,99,132,1)', backgroundColor:'rgba(255,99,132,0.2)', data:[], tension:0.3}
+    ]
+  },
+  options:{responsive:true, animation:false, scales:{y:{min:0,max:100,title:{display:true,text:'Pressure (%)'}}, x:{title:{display:true,text:'Time'}}}}
+});
+
+// SIMULATED ML MODEL (replace with real trained model)
+let model;
+async function loadModel() {
+  // Small neural network simulation
+  model = tf.sequential();
+  model.add(tf.layers.dense({units:8, activation:'relu', inputShape:[2]}));
+  model.add(tf.layers.dense({units:3, activation:'softmax'}));
+  // Simulated weights for demo
+  model.compile({optimizer:'adam', loss:'categoricalCrossentropy'});
+  console.log('Simulated ML model loaded');
+}
+loadModel();
+
+// PREDICTION FUNCTION
+function predictRisk(sensor1, sensor2) {
+  // Simple ML simulation: convert values into normalized tensor
+  const input = tf.tensor2d([[sensor1/100, sensor2/100]]);
+  const output = model.predict(input);
+  const arr = output.arraySync()[0];
+  // Simple threshold for demo
+  if (sensor1<30 && sensor2<30) return "Normal";
+  else if (sensor1<70 || sensor2<70) return "Moderate risk";
+  else return "High risk";
+}
+
+// BLE CONNECTION
+async function connectBLE(){
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      filters:[{name:'PlantarPressure'}],
+      optionalServices:['12345678-1234-1234-1234-123456789abc']
+    });
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('12345678-1234-1234-1234-123456789abc');
+    const sensor1Char = await service.getCharacteristic('11111111-1234-1234-1234-123456789abc');
+    const sensor2Char = await service.getCharacteristic('22222222-1234-1234-1234-123456789abc');
+
+    await sensor1Char.startNotifications();
+    await sensor2Char.startNotifications();
+
+    sensor1Char.addEventListener('characteristicvaluechanged', e=>{
+      const value = e.target.value.getUint8(0);
+      addDataToChart(value,null);
+    });
+    sensor2Char.addEventListener('characteristicvaluechanged', e=>{
+      const value = e.target.value.getUint8(0);
+      addDataToChart(null,value);
+    });
+
+    alert('Connected to Arduino Nano 33 BLE!');
+  } catch(error){
+    console.log('Connection error:',error);
+    alert('Failed to connect. Make sure Arduino is on and in range.');
+  }
+}
+
+// ADD DATA AND UPDATE ADVICE
+function addDataToChart(sensor1, sensor2){
+  const now = new Date().toLocaleTimeString();
+  pressureChart.data.labels.push(now);
+  if(sensor1!==null) pressureChart.data.datasets[0].data.push(sensor1);
+  else pressureChart.data.datasets[0].data.push(pressureChart.data.datasets[0].data.slice(-1)[0]||0);
+  if(sensor2!==null) pressureChart.data.datasets[1].data.push(sensor2);
+  else pressureChart.data.datasets[1].data.push(pressureChart.data.datasets[1].data.slice(-1)[0]||0);
+
+  if(pressureChart.data.labels.length>50){
+    pressureChart.data.labels.shift();
+    pressureChart.data.datasets.forEach(ds=>ds.data.shift());
+  }
+  pressureChart.update('none');
+
+  // ML INTERPRETATION
+  const s1 = pressureChart.data.datasets[0].data.slice(-1)[0];
+  const s2 = pressureChart.data.datasets[1].data.slice(-1)[0];
+  const risk = predictRisk(s1, s2);
+  let advice="";
+  if(risk==="Normal") advice="Feet are safe. Continue regular monitoring.";
+  else if(risk==="Moderate risk") advice="Moderate pressure detected. Consider adjusting posture or footwear.";
+  else advice="High pressure detected! Inspect feet, take preventive measures immediately.";
+  document.getElementById("adviceText").innerHTML = `<p>Risk Level: ${risk}</p><p>${advice}</p>`;
+}
+</script>
+
+</body>
+</html>
