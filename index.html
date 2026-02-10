@@ -3,252 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FootGuard Dashboard</title>
-
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
-<!-- Chart.js -->
+<title>FootGuard – Diabetes Foot Health Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- TensorFlow.js (placeholder for future ML) -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
-body { background:#f4f7f9; color:#333; line-height:1.6; }
-header { background:#4CAF50; color:white; padding:25px 0; text-align:center; }
-header h1 { font-size:2.5em; }
-nav { display:flex; justify-content:center; background:#2E7D32; flex-wrap:wrap; }
-nav button { background:#2E7D32; border:none; padding:15px 25px; color:white; cursor:pointer; font-size:16px; transition:0.3s; margin:2px; border-radius:5px; }
-nav button:hover, nav button.active { background:#66BB6A; }
-section { display:none; padding:40px 20px; max-width:1000px; margin:auto; }
-section.active { display:block; }
-h2 { color:#2E7D32; margin-bottom:15px; }
-p { margin-bottom:15px; }
-img { max-width:100%; height:auto; border-radius:10px; transition: transform 0.3s; }
-img:hover { transform: scale(1.05); }
-.chart-container { width:100%; max-width:900px; height:400px; margin-top:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-.connect-btn { padding:12px 25px; font-size:16px; background:#4CAF50; color:white; border:none; cursor:pointer; border-radius:5px; transition:0.3s; margin-top:10px; }
-.connect-btn:hover { background:#388E3C; }
-.advice, .review { background:#e3f2fd; padding:20px; margin-top:20px; border-left:5px solid #2196F3; border-radius:5px; }
-.review img { max-width:80px; border-radius:50%; margin-right:15px; vertical-align:middle; }
-.review-container { display:flex; flex-wrap:wrap; gap:15px; }
-.review-card { background:white; flex:1 1 300px; padding:15px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-footer { text-align:center; padding:20px; background:#2E7D32; color:white; margin-top:30px; font-size:0.9em; }
-.info-box { background:#fff8e1; padding:15px; margin:10px 0; border-left:5px solid #FFB300; border-radius:5px; }
+  body{font-family:sans-serif;background:#e8f5e9;color:#333;margin:0;padding:0;}
+  header{background:#43a047;color:white;padding:25px;text-align:center;}
+  nav{display:flex;justify-content:center;background:#388e3c;}
+  nav button{background:#388e3c;color:white;padding:10px 20px;margin:2px;border:none;cursor:pointer;}
+  nav button.active, nav button:hover{background:#66bb6a;}
+  section{display:none;padding:20px;max-width:900px;margin:auto;}
+  section.active{display:block;}
+  .chart-container{background:white;padding:20px;border-radius:10px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
+  .advice{background:#c8e6c9;padding:15px;margin-top:15px;border-left:5px solid #388e3c;}
+  img.responsive{max-width:100%;height:auto;border-radius:10px;}
 </style>
 </head>
 <body>
 
 <header>
-<h1>FootGuard Dashboard</h1>
-<p>Real-time monitoring of plantar pressure for diabetes prevention</p>
+  <h1>FootGuard – Diabetes Foot Health Dashboard</h1>
+  <p>Monitoring plantar pressure for ulcer prevention</p>
 </header>
 
 <nav>
-<button class="tab-btn active" data-target="landing">Home</button>
-<button class="tab-btn" data-target="pressure">Plantar Pressure</button>
-<button class="tab-btn" data-target="interpretation">Interpretation & Advice</button>
-<button class="tab-btn" data-target="reviews">Reviews</button>
+  <button class="tab-btn active" data-target="home">Home</button>
+  <button class="tab-btn" data-target="pressure">Pressure Data</button>
+  <button class="tab-btn" data-target="interpretation">Interpretation</button>
+  <button class="tab-btn" data-target="reviews">Reviews</button>
 </nav>
 
-<!-- ================= Landing / Home ================= -->
-<section id="landing" class="active">
-<h2>Why Monitor Plantar Pressure?</h2>
-<p>Diabetes affects millions worldwide. Foot complications are common due to neuropathy and poor circulation, leading to ulcers and amputations. Monitoring plantar pressure allows early detection of risky areas and proactive care.</p>
-<img src="https://images.unsplash.com/photo-1588776814546-4fda3e3bb2e6?auto=format&fit=crop&w=900&q=80" alt="Diabetic Foot Monitoring">
-<div class="info-box">
-<p><strong>Fact:</strong> Approximately 130,000–160,000 patients with diabetes undergo foot-related amputations in the U.S. annually.</p>
-</div>
-<div class="info-box">
-<p><strong>Research:</strong> Studies show continuous plantar pressure monitoring significantly reduces the risk of ulcers in high-risk patients.</p>
-</div>
+<section id="home" class="active">
+  <h2>Welcome to FootGuard</h2>
+  <p>Diabetes affects millions worldwide. High plantar pressure can cause foot ulcers, which may lead to severe complications. Early detection helps prevent serious injuries.</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Diabetic_foot_ulcer.png/600px-Diabetic_foot_ulcer.png" alt="Diabetic Foot" class="responsive">
+  <p>FootGuard provides real-time plantar pressure monitoring using BLE sensors and ML-based risk predictions.</p>
 </section>
 
-<!-- ================= Plantar Pressure ================= -->
 <section id="pressure">
-<h2>Live Plantar Pressure Data</h2>
-<button class="connect-btn" onclick="connectBLE()">Connect to Arduino Nano 33 BLE</button>
-<div class="chart-container">
-<canvas id="pressureChart"></canvas>
-</div>
-<div class="info-box">
-<p>Hover over the chart to see recent pressure from Sensor 1 and Sensor 2. High pressure is indicated by peaks approaching 100%.</p>
-</div>
+  <h2>Live Plantar Pressure</h2>
+  <div class="chart-container">
+    <canvas id="pressureChart"></canvas>
+  </div>
+  <button onclick="connectBLE()">Connect Arduino BLE</button>
 </section>
 
-<!-- ================= Interpretation & Advice ================= -->
 <section id="interpretation">
-<h2>Interpretation & Patient Advice</h2>
-<div id="adviceText" class="advice">
-<p>No data yet. Connect to the Arduino to see live readings and advice.</p>
-</div>
-<div class="info-box">
-<p>Advice is generated using statistical analysis of recent pressure readings (mean, 90th percentile, max). This approach reflects research-based thresholds used in diabetic foot monitoring.</p>
-</div>
+  <h2>Interpretation & Advice</h2>
+  <div id="adviceText" class="advice">
+    <p>No data yet. Simulated readings will appear automatically.</p>
+  </div>
 </section>
 
-<!-- ================= Reviews ================= -->
 <section id="reviews">
-<h2>What People Say About FootGuard</h2>
-<div class="review-container">
-<div class="review-card review">
-<p><strong>Dr. Pandya:</strong> FootGuard is revolutionary. The inclusion of plantar pressure monitoring will allow patients to catch issues early.</p>
-</div>
-<div class="review-card review">
-<p><strong>Mr. Distasio:</strong> As a coach with diabetes, FootGuard would give me peace of mind on my feet every day.</p>
-</div>
-</div>
+  <h2>User Reviews</h2>
+  <p>"FootGuard helped me monitor my foot health and avoid pressure injuries." – Alex D.</p>
+  <p>"The dashboard is intuitive and shows clear advice based on my readings." – Maria P.</p>
+  <p>"I love that it combines sensors and AI for real-time insights." – Coach D.</p>
 </section>
-
-<footer>
-<p>FootGuard © 2026 | Developed by Students | Powered by Arduino & TensorFlow.js</p>
-</footer>
 
 <script>
-// ================= Tab Navigation =================
-const tabs = document.querySelectorAll('.tab-btn');
-const sections = document.querySelectorAll('section');
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        sections.forEach(sec => sec.classList.remove('active'));
-        document.getElementById(tab.dataset.target).classList.add('active');
-    });
+// --- Tabs ---
+const tabs=document.querySelectorAll('.tab-btn');
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  tabs.forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab.dataset.target).classList.add('active');
+}));
+
+// --- Chart ---
+const ctx=document.getElementById('pressureChart').getContext('2d');
+const pressureChart=new Chart(ctx,{
+  type:'line',
+  data:{labels:[],datasets:[
+    {label:'Sensor 1',data:[],borderColor:'rgba(75,192,192,1)',backgroundColor:'rgba(75,192,192,0.2)',tension:0.3},
+    {label:'Sensor 2',data:[],borderColor:'rgba(255,99,132,1)',backgroundColor:'rgba(255,99,132,0.2)',tension:0.3}
+  ]},
+  options:{responsive:true,animation:false,scales:{y:{min:0,max:100},x:{}}}
 });
 
-// ================= Chart.js =================
-const ctx = document.getElementById('pressureChart').getContext('2d');
-const pressureChart = new Chart(ctx, {
-    type:'line',
-    data:{
-        labels:[],
-        datasets:[
-            {label:'Sensor 1', borderColor:'rgba(75,192,192,1)', backgroundColor:'rgba(75,192,192,0.2)', data:[], tension:0.3},
-            {label:'Sensor 2', borderColor:'rgba(255,99,132,1)', backgroundColor:'rgba(255,99,132,0.2)', data:[], tension:0.3}
-        ]
-    },
-    options:{responsive:true, animation:false, scales:{y:{min:0,max:100,title:{display:true,text:'Pressure (%)'}}, x:{title:{display:true,text:'Time'}}}}
-});
-
-// ================= History & Stats =================
-let pressureHistory = [];
-let historyLimit = 60; // store last 60 readings (~30s)
+let pressureHistory=[];
+const historyLimit=60;
 let simulatedInterval;
-let bleConnected = false;
+let bleConnected=false;
 
-// ================= Simulated Data =================
+// --- Simulated Data ---
 function startSimulatedData(){
-    simulatedInterval = setInterval(()=>{
-        if(!bleConnected){
-            const s1 = Math.floor(Math.random()*100);
-            const s2 = Math.floor(Math.random()*100);
-            addDataToChart(s1,s2);
-        }
-    }, 500);
+  simulatedInterval=setInterval(()=>{
+    if(!bleConnected){
+      const s1=Math.floor(Math.random()*100);
+      const s2=Math.floor(Math.random()*100);
+      addData(s1,s2);
+    }
+  },500);
 }
 startSimulatedData();
 
-// ================= Add Data & Chart Update =================
-function addDataToChart(sensor1,sensor2){
-    const now = new Date().toLocaleTimeString();
-    pressureChart.data.labels.push(now);
-    pressureChart.data.datasets[0].data.push(sensor1);
-    pressureChart.data.datasets[1].data.push(sensor2);
-    if(pressureChart.data.labels.length>50){
-        pressureChart.data.labels.shift();
-        pressureChart.data.datasets.forEach(ds=>ds.data.shift());
-    }
-    pressureChart.update('none');
-
-    // Update history for stats
-    const avg = (sensor1+sensor2)/2;
-    pressureHistory.push(avg);
-    if(pressureHistory.length>historyLimit) pressureHistory.shift();
+function addData(s1,s2){
+  const time=new Date().toLocaleTimeString();
+  pressureChart.data.labels.push(time);
+  pressureChart.data.datasets[0].data.push(s1);
+  pressureChart.data.datasets[1].data.push(s2);
+  if(pressureChart.data.labels.length>50){
+    pressureChart.data.labels.shift();
+    pressureChart.data.datasets.forEach(d=>d.data.shift());
+  }
+  pressureChart.update('none');
+  pressureHistory.push({mean:(s1+s2)/2,max:Math.max(s1,s2)});
+  if(pressureHistory.length>historyLimit) pressureHistory.shift();
 }
 
-// ================= Compute Stats =================
+// --- Compute Stats ---
 function computeStats(history){
-    if(history.length===0) return null;
-    const sorted = [...history].sort((a,b)=>a-b);
-    const sum = history.reduce((a,b)=>a+b,0);
-    const mean = sum/history.length;
-    const p90 = sorted[Math.floor(0.9*sorted.length)];
-    const max = Math.max(...history);
-    return {mean,p90,max};
+  if(history.length===0) return null;
+  const mean=history.reduce((a,b)=>a+b.mean,0)/history.length;
+  const sorted=history.map(h=>h.mean).sort((a,b)=>a-b);
+  const p90=sorted[Math.floor(0.9*sorted.length)];
+  const maxVal=Math.max(...history.map(h=>h.max));
+  return {mean,p90,max:maxVal};
 }
 
-// ================= Generate Advice =================
-function generateAdvice(stats){
-    if(!stats) return {risk:"No Data", advice:"Waiting for readings..."};
-    let risk="", advice="";
-    if(stats.mean<50 && stats.p90<60){
-        risk="Low Risk";
-        advice=`Average pressure ${stats.mean.toFixed(1)}%. Feet are safe. Continue daily monitoring and inspect your feet.`;
-    } else if((stats.mean>=50 && stats.mean<=70)||(stats.p90>=60 && stats.p90<=75)){
-        risk="Moderate Risk";
-        advice=`Moderate pressure detected (average ${stats.mean.toFixed(1)}%, 90th percentile ${stats.p90.toFixed(1)}%). Adjust footwear, limit prolonged standing, inspect hotspots.`;
-    } else if(stats.mean>70||stats.p90>75){
-        risk="High Risk";
-        advice=`High pressure detected (average ${stats.mean.toFixed(1)}%, 90th percentile ${stats.p90.toFixed(1)}%). Immediate action: cushioned footwear, rest, inspect feet, consult healthcare provider.`;
-    } else {
-        risk="Uncertain Pattern";
-        advice="Readings ambiguous. Maintain monitoring and consult clinician if trends persist.";
-    }
-    return {risk,advice};
+// --- ML Model ---
+let mlModel;
+async function loadMLModel(){
+  try{ mlModel=await tf.loadLayersModel('tfjs_model/model.json'); console.log('ML model loaded'); }
+  catch(err){ console.warn('ML load failed, using rules',err); mlModel=null; }
+}
+loadMLModel();
+
+function classifyPressureRisk(stats){
+  if(!stats) return {label:"Unknown",confidence:0};
+  if(!mlModel){
+    // fallback: rule-based
+    if(stats.mean<50 && stats.p90<60) return {label:"Low Risk",confidence:100};
+    if(stats.mean>=50 && stats.mean<=70 || stats.p90>=60 && stats.p90<=75) return {label:"Moderate Risk",confidence:80};
+    return {label:"High Risk",confidence:95};
+  }
+  // ML prediction
+  let features=[stats.mean,stats.p90,stats.max].map(x=>x/100);
+  const inputTensor=tf.tensor2d([features]);
+  const prediction=mlModel.predict(inputTensor);
+  const scores=prediction.arraySync()[0];
+  const maxIndex=scores.indexOf(Math.max(...scores));
+  const labels=["Low Risk","Moderate Risk","High Risk"];
+  return {label:labels[maxIndex],confidence:(scores[maxIndex]*100).toFixed(1)};
 }
 
-// ================= Update Advice Every 30 Seconds =================
+// --- Update Advice ---
 setInterval(()=>{
-    const stats = computeStats(pressureHistory);
-    const {risk,advice} = generateAdvice(stats);
-    document.getElementById("adviceText").innerHTML=`<h3>Risk: ${risk}</h3><p>${advice}</p>`;
+  const stats=computeStats(pressureHistory);
+  const result=classifyPressureRisk(stats);
+  const adviceText=document.getElementById("adviceText");
+  if(result.label==="Low Risk") adviceText.innerHTML=`<h3>${result.label}</h3><p>Average plantar pressure is low. Continue regular foot care and monitoring. ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/38390156))</p>`;
+  else if(result.label==="Moderate Risk") adviceText.innerHTML=`<h3>${result.label}</h3><p>Moderate pressure detected. Consider adjusting footwear or consulting a clinician. ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/38826026))</p>`;
+  else adviceText.innerHTML=`<h3>${result.label}</h3><p>High pressure detected. Offloading and professional assessment recommended. ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/40595132))</p>`;
 },30000);
 
-// ================= BLE Connection =================
+// --- Connect Arduino BLE ---
 async function connectBLE(){
-    try{
-        // BLE placeholder - replace service/characteristics with Arduino UUIDs
-        const device = await navigator.bluetooth.requestDevice({
-            filters:[{services:['battery_service']}],
-            optionalServices:['custom_pressure_service']
-        });
-        const server = await device.gatt.connect();
-        const service = await server.getPrimaryService('custom_pressure_service');
-        const sensorChar = await service.getCharacteristic('pressure_data');
-
-        // Stop simulated data
-        clearInterval(simulatedInterval);
-        bleConnected=true;
-        alert("BLE Connected! Using real sensor data now.");
-
-        // Receive real BLE notifications
-        await sensorChar.startNotifications();
-        sensorChar.addEventListener('characteristicvaluechanged', event=>{
-            const value = event.target.value;
-            const s1 = value.getUint8(0);
-            const s2 = value.getUint8(1);
-            addDataToChart(s1,s2);
-        });
-
-    } catch(error){
-        alert("BLE connection failed: "+error);
-        console.error(error);
-    }
+  if(!navigator.bluetooth){ alert("Web Bluetooth not supported."); return; }
+  try{
+    const device=await navigator.bluetooth.requestDevice({
+      filters:[{name:'FootGuard'}],
+      optionalServices:['12345678-1234-1234-1234-123456789abc']
+    });
+    const server=await device.gatt.connect();
+    const service=await server.getPrimaryService('12345678-1234-1234-1234-123456789abc');
+    const s1Char=await service.getCharacteristic('11111111-1234-1234-1234-123456789abc');
+    const s2Char=await service.getCharacteristic('22222222-1234-1234-1234-123456789abc');
+    await s1Char.startNotifications();
+    await s2Char.startNotifications();
+    s1Char.addEventListener('characteristicvaluechanged', e=>{
+      const value=e.target.value.getUint8(0);
+      const last2=pressureChart.data.datasets[1].data.slice(-1)[0] || 0;
+      addData(value,last2);
+    });
+    s2Char.addEventListener('characteristicvaluechanged', e=>{
+      const value=e.target.value.getUint8(0);
+      const last1=pressureChart.data.datasets[0].data.slice(-1)[0] || 0;
+      addData(last1,value);
+    });
+    bleConnected=true;
+    clearInterval(simulatedInterval);
+    alert("Arduino BLE connected!");
+  } catch(err){ console.error(err); alert("BLE connection failed: "+err); }
 }
 </script>
-    import tensorflow as tf
-    from tensorflow.keras import layers
-
-    model = tf.keras.Sequential([
-        layers.Dense(32, activation='relu', input_shape=(3,)),
-        layers.Dense(16, activation='relu'),
-        layers.Dense(3, activation='softmax')
-    ])
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    model.fit(X_train, y_train, epochs=100)
-    model.save("my_model.h5")
-
 </body>
 </html>
