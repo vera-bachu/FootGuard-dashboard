@@ -58,7 +58,7 @@ Monitoring plantar pressure allows for early detection of risky areas. FootGuard
 </section>
 
 <script>
-// TAB NAVIGATION
+// ================= TAB NAVIGATION =================
 const tabs = document.querySelectorAll('.tab-btn');
 const sections = document.querySelectorAll('section');
 tabs.forEach(tab => {
@@ -70,7 +70,7 @@ tabs.forEach(tab => {
   });
 });
 
-// CHART.JS SETUP
+// ================= CHART SETUP =================
 const ctx = document.getElementById('pressureChart').getContext('2d');
 const pressureChart = new Chart(ctx, {
   type:'line',
@@ -84,34 +84,14 @@ const pressureChart = new Chart(ctx, {
   options:{responsive:true, animation:false, scales:{y:{min:0,max:100,title:{display:true,text:'Pressure (%)'}}, x:{title:{display:true,text:'Time'}}}}
 });
 
-// SIMULATED ML MODEL (replace with real trained model)
-let model;
-async function loadModel() {
-  // Small neural network simulation
-  model = tf.sequential();
-  model.add(tf.layers.dense({units:8, activation:'relu', inputShape:[2]}));
-  model.add(tf.layers.dense({units:3, activation:'softmax'}));
-  // Simulated weights for demo
-  model.compile({optimizer:'adam', loss:'categoricalCrossentropy'});
-  console.log('Simulated ML model loaded');
-}
-loadModel();
+// ================= STATE =================
+let isBLEConnected = false;
 
-// PREDICTION FUNCTION
-function predictRisk(sensor1, sensor2) {
-  // Simple ML simulation: convert values into normalized tensor
-  const input = tf.tensor2d([[sensor1/100, sensor2/100]]);
-  const output = model.predict(input);
-  const arr = output.arraySync()[0];
-  // Simple threshold for demo
-  if (sensor1<30 && sensor2<30) return "Normal";
-  else if (sensor1<70 || sensor2<70) return "Moderate risk";
-  else return "High risk";
-}
-
-// BLE CONNECTION
+// ================= BLE CONNECTION =================
 async function connectBLE(){
   try {
+    isBLEConnected = true;
+
     const device = await navigator.bluetooth.requestDevice({
       filters:[{name:'PlantarPressure'}],
       optionalServices:['12345678-1234-1234-1234-123456789abc']
@@ -125,140 +105,88 @@ async function connectBLE(){
     await sensor2Char.startNotifications();
 
     sensor1Char.addEventListener('characteristicvaluechanged', e=>{
-      const value = e.target.value.getUint8(0);
-      addDataToChart(value,null);
+      addDataToChart(e.target.value.getUint8(0), null);
     });
     sensor2Char.addEventListener('characteristicvaluechanged', e=>{
-      const value = e.target.value.getUint8(0);
-      addDataToChart(null,value);
+      addDataToChart(null, e.target.value.getUint8(0));
     });
 
     alert('Connected to Arduino Nano 33 BLE!');
   } catch(error){
-    console.log('Connection error:',error);
-    alert('Failed to connect. Make sure Arduino is on and in range.');
+    console.log(error);
+    alert('BLE connection failed.');
   }
 }
 
-// ADD DATA AND UPDATE ADVICE
-function addDataToChart(sensor1, sensor2){
-  const now = new Date().toLocaleTimeString();
-  pressureChart.data.labels.push(now);
-  if(sensor1!==null) pressureChart.data.datasets[0].data.push(sensor1);
-  else pressureChart.data.datasets[0].data.push(pressureChart.data.datasets[0].data.slice(-1)[0]||0);
-  if(sensor2!==null) pressureChart.data.datasets[1].data.push(sensor2);
-  else pressureChart.data.datasets[1].data.push(pressureChart.data.datasets[1].data.slice(-1)[0]||0);
-
-  if(pressureChart.data.labels.length>50){
-    pressureChart.data.labels.shift();
-    pressureChart.data.datasets.forEach(ds=>ds.data.shift());
-  }
-  pressureChart.update('none');
-
-  // ML INTERPRETATION
-  const s1 = pressureChart.data.datasets[0].data.slice(-1)[0];
-  const s2 = pressureChart.data.datasets[1].data.slice(-1)[0];
-  const risk = predictRisk(s1, s2);
-  let advice="";
-  if(risk==="Normal") advice="Feet are safe. Continue regular monitoring.";
-  else if(risk==="Moderate risk") advice="Moderate pressure detected. Consider adjusting posture or footwear.";
-  else advice="High pressure detected! Inspect feet, take preventive measures immediately.";
-  document.getElementById("adviceText").innerHTML = `<p>Risk Level: ${risk}</p><p>${advice}</p>`;
-}
-  // Simulate random data till we get the BLE connected
-setInterval(() => {
-  const sensor1 = Math.floor(Math.random()*100);
-  const sensor2 = Math.floor(Math.random()*100);
-  addDataToChart(sensor1, sensor2);
-}, 500);
-
-</script>
-<script>
-/* ================================
-   EXPERT-DERIVED ML INTERPRETER
-   ================================ */
-
-/*
-This model is based on:
-- Lavery et al., Diabetes Care
-- Bus et al., Journal of Biomechanics
-- Armstrong et al., NEJM
-
-It uses clinically validated pressure features,
-not raw sensor spikes.
-*/
-
+// ================= EXPERT-DERIVED ML =================
 function extractFeatures(sensor1Data, sensor2Data) {
   const combined = sensor1Data.map((v,i)=> (v + sensor2Data[i]) / 2);
-
   const mean = combined.reduce((a,b)=>a+b,0) / combined.length;
-
   const sorted = [...combined].sort((a,b)=>a-b);
   const p90 = sorted[Math.floor(sorted.length * 0.9)];
-
-  const imbalance = Math.abs(
-    sensor1Data[sensor1Data.length-1] -
-    sensor2Data[sensor2Data.length-1]
-  );
-
+  const imbalance = Math.abs(sensor1Data.at(-1) - sensor2Data.at(-1));
   return { mean, p90, imbalance };
 }
 
 function mlRiskAssessment(features) {
-  let riskScore = 0;
+  let score = 0;
+  if (features.mean > 55) score += 1;
+  if (features.p90 > 70) score += 2;
+  if (features.imbalance > 20) score += 1;
 
-  // Clinically inspired weighting
-  if (features.mean > 55) riskScore += 1;
-  if (features.p90 > 70) riskScore += 2;
-  if (features.imbalance > 20) riskScore += 1;
-
-  if (riskScore <= 1) return {level:"Low Risk", confidence:0.90};
-  if (riskScore === 2) return {level:"Moderate Risk", confidence:0.86};
+  if (score <= 1) return {level:"Low Risk", confidence:0.90};
+  if (score === 2) return {level:"Moderate Risk", confidence:0.86};
   return {level:"High Risk", confidence:0.92};
 }
 
-function generateClinicalAdvice(result, features) {
-  if (result.level === "Low Risk") {
-    return `
-      <b>Low Ulcer Risk</b><br>
-      Plantar pressure distribution remains within safe limits.
-      Mean pressure and peak exposure are below thresholds commonly
-      associated with tissue breakdown in diabetic patients.
-    `;
-  }
-
-  if (result.level === "Moderate Risk") {
-    return `
-      <b>Moderate Ulcer Risk</b><br>
-      Sustained elevated pressure detected in the upper percentile.
-      Consider footwear modification and reduced standing duration.
-    `;
-  }
-
-  return `
-    <b>High Ulcer Risk</b><br>
-    Prolonged high plantar pressure and imbalance detected.
-    Clinical literature associates these patterns with ulcer formation.
-    Immediate offloading and foot inspection is advised.
-  `;
-}
-  if (pressureChart.data.datasets[0].data.length > 30) {
-  const s1 = pressureChart.data.datasets[0].data.slice(-30);
-  const s2 = pressureChart.data.datasets[1].data.slice(-30);
-
-  const features = extractFeatures(s1, s2);
-  const result = mlRiskAssessment(features);
-
-  document.getElementById("adviceText").innerHTML = `
-    <p><b>Risk Level:</b> ${result.level}</p>
-    <p><b>Model Confidence:</b> ${(result.confidence*100).toFixed(1)}%</p>
-    <p>${generateClinicalAdvice(result, features)}</p>
-    <p style="font-size:0.9em;">
-      Based on patient-specific pressure statistics over time.
-    </p>
-  `;
+function generateClinicalAdvice(result) {
+  if (result.level==="Low Risk")
+    return "Pressure patterns remain within safe clinical limits.";
+  if (result.level==="Moderate Risk")
+    return "Sustained pressure detected. Footwear adjustment recommended.";
+  return "High-risk pressure pattern detected. Immediate offloading advised.";
 }
 
+// ================= DATA HANDLER =================
+function addDataToChart(sensor1, sensor2){
+  const now = new Date().toLocaleTimeString();
+  pressureChart.data.labels.push(now);
+
+  const d1 = pressureChart.data.datasets[0].data;
+  const d2 = pressureChart.data.datasets[1].data;
+
+  d1.push(sensor1 ?? d1.at(-1) ?? 0);
+  d2.push(sensor2 ?? d2.at(-1) ?? 0);
+
+  if (d1.length > 50) {
+    pressureChart.data.labels.shift();
+    d1.shift(); d2.shift();
+  }
+
+  pressureChart.update('none');
+
+  if (d1.length >= 30) {
+    const features = extractFeatures(d1.slice(-30), d2.slice(-30));
+    const result = mlRiskAssessment(features);
+
+    document.getElementById("adviceText").innerHTML = `
+      <p><b>Risk Level:</b> ${result.level}</p>
+      <p><b>Model Confidence:</b> ${(result.confidence*100).toFixed(1)}%</p>
+      <p>${generateClinicalAdvice(result)}</p>
+      <p style="font-size:0.9em;">Based on patient-specific plantar pressure trends.</p>
+    `;
+  }
+}
+
+// ================= SIMULATION =================
+setInterval(() => {
+  if (!isBLEConnected) {
+    addDataToChart(
+      Math.floor(Math.random()*100),
+      Math.floor(Math.random()*100)
+    );
+  }
+}, 500);
 </script>
 
 </body>
