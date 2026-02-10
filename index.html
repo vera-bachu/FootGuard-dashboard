@@ -1,238 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>FootGuard Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 :root {
-    --fg-primary: #2ecc71;
-    --fg-primary-dark: #27ae60;
-    --fg-secondary: #3498db;
-    --fg-accent: #f39c12;
-    --fg-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    --fg-card-bg: rgba(255, 255, 255, 0.96);
-    --fg-shadow-soft: 0 18px 45px rgba(31, 38, 135, 0.16);
-    --fg-radius-lg: 22px;
-    --fg-radius-md: 16px;
-    --fg-radius-pill: 999px;
-    --fg-text-main: #2c3e50;
-    --fg-text-soft: #6b7b8c;
-    --fg-border-subtle: rgba(0, 0, 0, 0.05);
+  --primary:#2ecc71;
+  --primary-dark:#27ae60;
+  --secondary:#3498db;
+  --bg-gradient:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);
+  --card-bg:rgba(255,255,255,0.9);
+  --shadow:0 8px 32px rgba(31,38,135,0.15);
 }
 
-body {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--fg-bg-gradient);
-    color: var(--fg-text-main);
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:var(--bg-gradient);
+  margin:0;
+  color:#2c3e50;
 }
 
-.fg-root { min-height: 100vh; }
-
-.fg-header {
-    background: #ffffff;
-    padding: 32px 24px;
-    border-bottom: 4px solid var(--fg-primary);
-    box-shadow: var(--fg-shadow-soft);
-    position: sticky;
-    top: 0;
-    z-index: 20;
+header{
+  background:white;
+  padding:40px 20px;
+  text-align:center;
+  border-bottom:4px solid var(--primary);
+  box-shadow:var(--shadow);
 }
 
-.fg-header-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+nav{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:20px;
+  position:sticky;
+  top:0;
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(10px);
+  z-index:100;
 }
 
-.fg-header h1 { margin:0; font-size:2.2rem; }
-.fg-header p { margin:4px 0 0; color: var(--fg-text-soft); }
-
-.pill {
-    padding: 8px 18px;
-    border-radius: var(--fg-radius-pill);
-    background: rgba(46, 204, 113, 0.08);
-    color: var(--fg-primary-dark);
-    font-size: 0.85rem;
-    font-weight: 600;
+nav button{
+  background:white;
+  border:1px solid #ddd;
+  padding:12px 25px;
+  border-radius:50px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
 }
 
-.fg-nav {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 18px 16px 10px;
-    position: sticky;
-    top:96px;
-    z-index: 15;
-    backdrop-filter: blur(14px);
-    background: rgba(255,255,255,0.7);
+nav button.active{
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
 }
 
-.nav-btn {
-    border-radius: var(--fg-radius-pill);
-    border: 1px solid rgba(0,0,0,0.05);
-    background: #ffffff;
-    padding: 10px 20px;
-    font-size:0.9rem;
-    font-weight:600;
-    cursor:pointer;
-    color: var(--fg-text-soft);
-    transition: all 0.22s ease;
+section{
+  display:none;
+  padding:40px;
+  max-width:1000px;
+  margin:30px auto;
+  background:var(--card-bg);
+  border-radius:20px;
+  box-shadow:var(--shadow);
 }
 
-.nav-btn:hover { transform: translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,0.06);}
-.nav-btn.active { background: var(--fg-primary); color:#fff; border-color: var(--fg-primary);}
+section.active{display:block;}
 
-.fg-main { max-width:1100px; margin:24px auto 40px; padding:0 16px 32px; }
-.card { background: var(--fg-card-bg); border-radius: var(--fg-radius-lg); padding:28px 26px 30px; border:1px solid var(--fg-border-subtle); animation:fadeInUp 0.35s ease; display:none;}
-.card.active { display:block; }
-.card h2 { margin-top:0; border-left:5px solid var(--fg-primary); padding-left:14px; }
-.subtitle { color: var(--fg-text-soft); margin-top:8px; }
+h2{
+  border-left:5px solid var(--primary);
+  padding-left:15px;
+}
 
-.monitoring-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: 18px; margin-top:18px; }
-.chart-shell { background:#fff; border-radius: var(--fg-radius-md); padding:12px 16px 16px; min-height:260px; box-shadow: 0 12px 30px rgba(0,0,0,0.05);}
-.metric-card { background:#fff; border-radius: var(--fg-radius-md); padding:12px 14px; border:1px solid var(--fg-border-subtle);}
-.metric-label { font-size:0.8rem; color: var(--fg-text-soft); }
-.metric-value { display:block; font-size:1.3rem; font-weight:600; }
-.metric-value.warning { color:#e67e22; }
-.primary-btn, .ghost-btn { padding:11px 16px; border-radius: var(--fg-radius-pill); font-size:0.9rem; font-weight:600; cursor:pointer; border:none; transition:all 0.22s ease;}
-.primary-btn { background:var(--fg-primary); color:#fff;}
-.primary-btn:hover { background: var(--fg-primary-dark); transform:translateY(-1px); box-shadow:0 10px 25px rgba(39,174,96,0.3);}
-.ghost-btn { background:transparent; border:1px solid rgba(0,0,0,0.1); color: var(--fg-text-main);}
-.ghost-btn:hover { background:#fff;}
+.chart-container{
+  height:400px;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+}
 
-@keyframes fadeInUp { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
-@media (max-width:768px){ .monitoring-grid{grid-template-columns:1fr;} }
+.connect-btn{
+  padding:15px 40px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  margin-bottom:20px;
+}
 
+.advice{
+  background:white;
+  padding:25px;
+  border-left:8px solid var(--secondary);
+  border-radius:15px;
+  margin-top:20px;
+}
 </style>
 </head>
+
 <body>
-<div class="fg-root">
-<header class="fg-header">
-<div class="fg-header-inner">
-    <div>
-        <h1>FootGuard</h1>
-        <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
-    </div>
-    <div class="pill">Medical Dashboard Template</div>
-</div>
+
+<header>
+  <h1>FootGuard</h1>
+  <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
 </header>
 
-<nav class="fg-nav">
-<button class="nav-btn active" data-target="overview">Overview</button>
-<button class="nav-btn" data-target="monitoring">Live Monitoring</button>
-<button class="nav-btn" data-target="advice">Clinical Advice</button>
+<nav>
+  <button class="tab-btn active" data-target="landing">Overview</button>
+  <button class="tab-btn" data-target="pressure">Live Monitoring</button>
+  <button class="tab-btn" data-target="interpretation">Clinical Advice</button>
+  <button class="tab-btn" data-target="symptoms">Symptoms</button>
+  <button class="tab-btn" data-target="treatment">Treatment</button>
 </nav>
 
-<main class="fg-main">
-<section id="overview" class="card active">
-<h2>The Importance of Monitoring</h2>
-<p>Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide. FootGuard monitors plantar pressure to reduce risk.</p>
+<section id="landing" class="active">
+  <h2>Why Monitoring Matters</h2>
+  <p>
+    Diabetic Foot Ulcers are caused by prolonged elevated plantar pressure combined
+    with neuropathy. Continuous monitoring allows early intervention before tissue
+    breakdown occurs.
+  </p>
 </section>
 
-<section id="monitoring" class="card">
-<h2>Live Monitoring</h2>
-<p class="subtitle">Simulated real-time plantar pressure data.</p>
-<div class="monitoring-grid">
-    <div class="chart-shell">
-        <canvas id="pressureChart"></canvas>
-    </div>
-    <div class="monitoring-side">
-        <div class="metric-card">
-            <span class="metric-label">Current risk level</span>
-            <span class="metric-value warning" id="riskLevel">Low</span>
-        </div>
-        <div class="metric-card">
-            <span class="metric-label">Alerts in last 24h</span>
-            <span class="metric-value" id="alertsCount">0</span>
-        </div>
-        <button class="primary-btn">Connect Device</button>
-        <button class="ghost-btn">View patient list</button>
-    </div>
-</div>
-</section>
-
-<section id="advice" class="card">
-<h2>Clinical Advice</h2>
-<div class="advice-panel">
-<ul>
-<li>Perform structured foot exams regularly.</li>
-<li>Monitor alerts and intervene early.</li>
-<li>Coordinate care with clinical teams.</li>
-</ul>
-</div>
-</section>
-</main>
-</div>
-
-<script>
-const tabs = document.querySelectorAll(".nav-btn");
-const sections = document.querySelectorAll(".card");
-let pressureChartInstance = null;
-
-function randomData(length, min=10, max=20) {
-    return Array.from({length}, () => Math.floor(Math.random()*(max-min+1))+min);
-}
-
-function getRiskLevel(avg) {
-    if(avg < 14) return "Low";
-    else if(avg < 17) return "Moderate";
-    else return "High";
-}
-
-function showSection(targetId) {
-    tabs.forEach(btn => btn.classList.remove("active"));
-    sections.forEach(sec => sec.classList.remove("active"));
-
-    document.querySelector(`.nav-btn[data-target="${targetId}"]`)?.classList.add("active");
-    document.getElementById(targetId)?.classList.add("active");
-
-    if(targetId==="monitoring") initPressureChart();
-}
-
-function initPressureChart() {
-    const ctx = document.getElementById("pressureChart");
-    if(!ctx) return;
-
-    if(pressureChartInstance) pressureChartInstance.destroy();
-
-    const data = randomData(6, 10, 20);
-    const avg = data.reduce((a,b)=>a+b,0)/data.length;
-
-    document.getElementById("riskLevel").textContent = getRiskLevel(avg);
-    document.getElementById("alertsCount").textContent = Math.floor(Math.random()*5);
-
-    pressureChartInstance = new Chart(ctx, {
-        type:"line",
-        data:{
-            labels: ["0s","10s","20s","30s","40s","50s"],
-            datasets:[{
-                label:"Plantar Pressure (kPa)",
-                data:data,
-                borderColor:"rgba(46,204,113,1)",
-                backgroundColor:"rgba(46,204,113,0.2)",
-                tension:0.3,
-                pointRadius:4
-            }]
-        },
-        options:{
-            responsive:true,
-            maintainAspectRatio:false,
-            scales:{ y:{ beginAtZero:true } }
-        }
-    });
-}
-
-tabs.forEach(tab=>{
-    tab.addEventListener("click",()=>showSection(tab.getAttribute("data-target")));
-});
-
-// Default view
-showSection("overview");
-</script>
-</body>
-</html>
+<section id="pressure">
+  <h2>Live Plantar Pressure Data</h2>
+  <button class="connect-btn" onclick="connectBLE()">Connect FootGuard Device</button>
+  <div class="chart-container">
+    <canvas id="pressureChart"></
