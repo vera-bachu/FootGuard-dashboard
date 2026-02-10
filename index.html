@@ -6,69 +6,183 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <style>
-body { font-family: Arial, sans-serif; background: #f4f7f9; margin:0; padding:0; color:#333; }
-header { background:#4CAF50; color:white; padding:20px; text-align:center; }
-nav { display:flex; justify-content:center; background:#2E7D32; }
-nav button { background:#2E7D32; border:none; padding:12px 20px; color:white; cursor:pointer; font-size:16px; }
-nav button.active { background:#66BB6A; }
-section { display:none; padding:30px; max-width:900px; margin:auto; }
-section.active { display:block; }
-h2 { color:#2E7D32; }
-.chart-container { width:100%; height:400px; margin-top:20px; }
-.connect-btn { padding:16px 30px; font-size:18px; background:#4CAF50; color:white; border:none; cursor:pointer; margin:15px 0; }
-p { line-height:1.6em; font-size:1.1em; }
-.advice { background:#e3f2fd; padding:18px; margin-top:20px; border-left:5px solid #2196F3; }
+/* Modern CSS Reset & Variables */
+:root {
+  --primary: #2ecc71;
+  --primary-dark: #27ae60;
+  --secondary: #3498db;
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  background: var(--bg-gradient); 
+  background-attachment: fixed;
+  margin: 0; 
+  padding: 0; 
+  color: #2c3e50; 
+  min-height: 100vh;
+}
+
+header { 
+  background: white; 
+  color: #333; 
+  padding: 40px 20px; 
+  text-align: center; 
+  box-shadow: var(--shadow);
+  border-bottom: 4px solid var(--primary);
+}
+
+header h1 { margin: 0; font-size: 2.5em; letter-spacing: -1px; color: #1a1a1a; }
+header p { margin: 10px 0 0; opacity: 0.8; font-weight: 300; }
+
+/* Interactive Navigation */
+nav { 
+  display: flex; 
+  justify-content: center; 
+  gap: 10px;
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+nav button { 
+  background: white; 
+  border: 1px solid #ddd; 
+  padding: 12px 25px; 
+  color: #555; 
+  cursor: pointer; 
+  font-size: 15px; 
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+nav button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+nav button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* Section Containers */
+section { 
+  display: none; 
+  padding: 40px; 
+  max-width: 1000px; 
+  margin: 30px auto; 
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  animation: fadeIn 0.5s ease;
+}
+
+section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 { color: #1a1a1a; border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 25px; }
+
+/* Chart Styling */
+.chart-container { 
+  width: 100%; 
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-sizing: border-box;
+  margin-top: 20px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* Button & UI Elements */
+.connect-btn { 
+  padding: 15px 40px; 
+  font-size: 16px; 
+  background: var(--primary); 
+  color: white; 
+  border: none; 
+  border-radius: 10px;
+  cursor: pointer; 
+  margin: 15px 0; 
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background 0.3s;
+}
+
+.connect-btn:hover { background: var(--primary-dark); }
+
+p { line-height: 1.8; font-size: 1.1em; color: #444; }
+
+.advice { 
+  background: #fff; 
+  padding: 25px; 
+  margin-top: 20px; 
+  border-radius: 15px;
+  border-left: 8px solid var(--secondary);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+strong { color: #2c3e50; }
 </style>
 </head>
 <body>
 
 <header>
-<h1>FootGuard Dashboard</h1>
+<h1>FootGuard</h1>
 <p>Diabetic Foot Ulcer (DFU) Risk Monitoring System</p>
 </header>
 
 <nav>
-<button class="tab-btn active" data-target="landing">Why Monitor?</button>
-<button class="tab-btn" data-target="pressure">Plantar Pressure</button>
-<button class="tab-btn" data-target="interpretation">Interpretation & Advice</button>
+<button class="tab-btn active" data-target="landing">Overview</button>
+<button class="tab-btn" data-target="pressure">Live Monitoring</button>
+<button class="tab-btn" data-target="interpretation">Clinical Advice</button>
 </nav>
 
-<section id="landing" class="active">
-<h2>Why Monitoring Plantar Pressure Matters in Diabetes</h2>
+<div class="main-content">
+  <section id="landing" class="active">
+  <h2>The Importance of Monitoring</h2>
 
-<p>
-<strong>Abstract:</strong> Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide.
-Clinical research demonstrates that prolonged elevated plantar pressure, particularly in patients with diabetic
-neuropathy, is a primary biomechanical predictor of ulcer formation.
-</p>
+  <p>
+  <strong>Abstract:</strong> Diabetic Foot Ulcers (DFUs) are a leading cause of lower-extremity amputation worldwide.
+  Clinical research demonstrates that prolonged elevated plantar pressure, particularly in patients with diabetic
+  neuropathy, is a primary biomechanical predictor of ulcer formation.
+  </p>
 
-<p>
-Due to nerve damage and reduced sensation, many individuals with diabetes cannot perceive harmful pressure
-accumulation in the foot. Without intervention, repetitive mechanical stress leads to tissue breakdown,
-infection, and ulceration.
-</p>
+  <p>
+  Due to nerve damage and reduced sensation, many individuals with diabetes cannot perceive harmful pressure
+  accumulation in the foot. Without intervention, repetitive mechanical stress leads to tissue breakdown,
+  infection, and ulceration.
+  </p>
 
-<p>
-FootGuard continuously analyzes plantar pressure patterns to estimate DFU risk using statistically derived
-features validated in peer-reviewed literature. The goal is <strong>early detection, prevention, and risk awareness</strong>,
-not diagnosis.
-</p>
-</section>
+  <p>
+  FootGuard continuously analyzes plantar pressure patterns to estimate DFU risk using statistically derived
+  features validated in peer-reviewed literature. The goal is <strong>early detection, prevention, and risk awareness</strong>.
+  </p>
+  </section>
 
-<section id="pressure">
-<h2>Live Plantar Pressure Data</h2>
-<button class="connect-btn" onclick="connectBLE()">Connect FootGuard Device</button>
-<div class="chart-container">
-<canvas id="pressureChart"></canvas>
+  <section id="pressure">
+  <h2>Live Plantar Pressure Data</h2>
+  <p>Ensure your sensors are positioned correctly before initiating the link.</p>
+  <button class="connect-btn" onclick="connectBLE()">Connect FootGuard Device</button>
+  <div class="chart-container">
+  <canvas id="pressureChart"></canvas>
+  </div>
+  </section>
+
+  <section id="interpretation">
+  <h2>DFU Risk Interpretation</h2>
+  <div id="adviceText" class="advice">
+  <p>Waiting for telemetry... Please connect the FootGuard device to begin analysis.</p>
+  </div>
+  </section>
 </div>
-</section>
-
-<section id="interpretation">
-<h2>DFU Risk Interpretation & Patient Guidance</h2>
-<div id="adviceText" class="advice">
-<p>No data available. Connect the FootGuard device to begin DFU risk analysis.</p>
-</div>
-</section>
 
 <script>
 // ================= TAB NAVIGATION =================
@@ -90,11 +204,20 @@ const pressureChart = new Chart(ctx, {
   data:{
     labels:[],
     datasets:[
-      {label:'Sensor 1', borderColor:'rgba(75,192,192,1)', backgroundColor:'rgba(75,192,192,0.2)', data:[], tension:0.3},
-      {label:'Sensor 2', borderColor:'rgba(255,99,132,1)', backgroundColor:'rgba(255,99,132,0.2)', data:[], tension:0.3}
+      {label:'Medial (Sensor 1)', borderColor:'#3498db', backgroundColor:'rgba(52, 152, 219, 0.1)', data:[], fill: true, tension:0.4},
+      {label:'Lateral (Sensor 2)', borderColor:'#e74c3c', backgroundColor:'rgba(231, 76, 60, 0.1)', data:[], fill: true, tension:0.4}
     ]
   },
-  options:{responsive:true, animation:false, scales:{y:{min:0,max:100,title:{display:true,text:'Relative Pressure (%)'}}, x:{title:{display:true,text:'Time'}}}}
+  options:{
+    responsive:true, 
+    maintainAspectRatio: false,
+    animation: { duration: 0 }, 
+    scales:{
+      y:{min:0,max:100, grid: { color: '#eee' }, title:{display:true,text:'Pressure %'}}, 
+      x:{grid: { display: false }, title:{display:true,text:'Timeline'}}
+    },
+    plugins: { legend: { position: 'top' } }
+  }
 });
 
 // ================= STATE =================
@@ -129,7 +252,7 @@ async function connectBLE(){
     alert('FootGuard device successfully connected.');
   } catch(error){
     console.error(error);
-    alert('BLE connection failed.');
+    alert('BLE connection failed. Running in simulation mode.');
   }
 }
 
@@ -154,61 +277,4 @@ function mlRiskAssessment(features) {
   return {level:"High DFU Risk", confidence:0.93};
 }
 
-function generateClinicalAdvice(result) {
-  if (result.level === "Low DFU Risk")
-    return "Plantar pressure distribution remains within thresholds not commonly associated with diabetic foot ulcer formation. Continued monitoring and daily foot inspection are advised.";
-
-  if (result.level === "Moderate DFU Risk")
-    return "Sustained elevated plantar pressure has been detected. Clinical studies recommend pressure redistribution strategies, including footwear modification and reduced load duration.";
-
-  return "Prolonged high plantar pressure and asymmetry detected. Evidence strongly associates these patterns with diabetic foot ulcer development. Immediate pressure offloading and medical evaluation are recommended.";
-}
-
-// ================= DATA HANDLER =================
-function addDataToChart(sensor1, sensor2){
-  const now = new Date().toLocaleTimeString();
-  pressureChart.data.labels.push(now);
-
-  const d1 = pressureChart.data.datasets[0].data;
-  const d2 = pressureChart.data.datasets[1].data;
-
-  d1.push(sensor1 ?? d1.at(-1) ?? 0);
-  d2.push(sensor2 ?? d2.at(-1) ?? 0);
-
-  if (d1.length > 50) {
-    pressureChart.data.labels.shift();
-    d1.shift(); d2.shift();
-  }
-
-  pressureChart.update('none');
-
-  if (d1.length >= 30) {
-    const features = extractFeatures(d1.slice(-30), d2.slice(-30));
-    const result = mlRiskAssessment(features);
-
-    document.getElementById("adviceText").innerHTML = `
-      <p><strong>Diagnosis Focus:</strong> Diabetic Foot Ulcer (DFU) Risk Assessment</p>
-      <p><strong>Risk Level:</strong> ${result.level}</p>
-      <p><strong>Model Confidence:</strong> ${(result.confidence*100).toFixed(1)}%</p>
-      <p>${generateClinicalAdvice(result)}</p>
-      <p style="font-size:0.9em;">
-        Interpretation derived from patient-specific plantar pressure statistics (mean load, peak exposure, and pressure imbalance),
-        consistent with published diabetic foot biomechanics research.
-      </p>
-    `;
-  }
-}
-
-// ================= SIMULATION =================
-setInterval(() => {
-  if (!isBLEConnected) {
-    addDataToChart(
-      Math.floor(Math.random()*100),
-      Math.floor(Math.random()*100)
-    );
-  }
-}, 500);
-</script>
-
-</body>
-</html>
+function generateClinicalAdvice(result
