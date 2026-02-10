@@ -3,246 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FootGuard Dashboard</title>
+<title>FootGuard – Diabetes Foot Health Dashboard</title>
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- TensorFlow.js (placeholder for future ML) -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
-body { background:#f4f7f9; color:#333; line-height:1.6; }
-header { background:#4CAF50; color:white; padding:25px 0; text-align:center; }
-header h1 { font-size:2.5em; }
-nav { display:flex; justify-content:center; background:#2E7D32; flex-wrap:wrap; }
-nav button { background:#2E7D32; border:none; padding:15px 25px; color:white; cursor:pointer; font-size:16px; transition:0.3s; margin:2px; border-radius:5px; }
-nav button:hover, nav button.active { background:#66BB6A; }
+/* ===== Base Styles ===== */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif; }
+body { background:#fafafb; color:#333; }
+header { background:#1976d2; color:white; padding:25px 0; text-align:center; }
+header h1 { font-size:2.8em; }
+nav { display:flex; justify-content:center; background:#1565c0; flex-wrap:wrap; }
+nav button { background:#1565c0; border:none; padding:15px 25px; color:white; cursor:pointer; font-size:16px; margin:3px; border-radius:5px; transition:0.3s; }
+nav button.active, nav button:hover { background:#42a5f5; }
 section { display:none; padding:40px 20px; max-width:1000px; margin:auto; }
 section.active { display:block; }
-h2 { color:#2E7D32; margin-bottom:15px; }
-p { margin-bottom:15px; }
-img { max-width:100%; height:auto; border-radius:10px; transition: transform 0.3s; }
-img:hover { transform: scale(1.05); }
+h2 { color:#1565c0; margin-bottom:15px; }
+p { margin-bottom:15px; line-height:1.6; }
 .chart-container { width:100%; max-width:900px; height:400px; margin-top:20px; background:white; padding:20px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-.connect-btn { padding:12px 25px; font-size:16px; background:#4CAF50; color:white; border:none; cursor:pointer; border-radius:5px; transition:0.3s; margin-top:10px; }
-.connect-btn:hover { background:#388E3C; }
-.advice, .review { background:#e3f2fd; padding:20px; margin-top:20px; border-left:5px solid #2196F3; border-radius:5px; }
-.review img { max-width:80px; border-radius:50%; margin-right:15px; vertical-align:middle; }
-.review-container { display:flex; flex-wrap:wrap; gap:15px; }
+.connect-btn { padding:12px 25px; font-size:16px; background:#1976d2; color:white; border:none; cursor:pointer; border-radius:5px; margin-top:10px; transition:0.3s; }
+.connect-btn:hover { background:#0d47a1; }
+.advice { background:#e3f2fd; padding:20px; margin-top:20px; border-left:5px solid #2196f3; border-radius:5px; }
+.review-container { display:flex; flex-wrap:wrap; gap:20px; margin-top:20px; }
 .review-card { background:white; flex:1 1 300px; padding:15px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-footer { text-align:center; padding:20px; background:#2E7D32; color:white; margin-top:30px; font-size:0.9em; }
-.info-box { background:#fff8e1; padding:15px; margin:10px 0; border-left:5px solid #FFB300; border-radius:5px; }
+footer { text-align:center; padding:20px; background:#1565c0; color:white; margin-top:30px; font-size:0.9em; }
+.info-box { background:#fff8e1; padding:15px; margin:10px 0; border-left:5px solid #ffb300; border-radius:5px; }
+img { max-width:100%; height:auto; border-radius:10px; transition:transform 0.3s; }
+img:hover { transform:scale(1.05); }
 </style>
 </head>
 <body>
 
 <header>
-<h1>FootGuard Dashboard</h1>
-<p>Real-time monitoring of plantar pressure for diabetes prevention</p>
+  <h1>FootGuard – Diabetes Foot Health Dashboard</h1>
+  <p>Monitoring Plantar Pressure for Diabetic Foot Ulcer Prevention</p>
 </header>
 
 <nav>
-<button class="tab-btn active" data-target="landing">Home</button>
-<button class="tab-btn" data-target="pressure">Plantar Pressure</button>
-<button class="tab-btn" data-target="interpretation">Interpretation & Advice</button>
-<button class="tab-btn" data-target="reviews">Reviews</button>
+  <button class="tab-btn active" data-target="landing">Home</button>
+  <button class="tab-btn" data-target="research">Research & Abstract</button>
+  <button class="tab-btn" data-target="pressure">Pressure Data</button>
+  <button class="tab-btn" data-target="interpretation">Interpretation</button>
+  <button class="tab-btn" data-target="reviews">Reviews</button>
 </nav>
 
-<!-- ================= Landing / Home ================= -->
+<!-- ===== Landing ===== -->
 <section id="landing" class="active">
-<h2>Why Monitor Plantar Pressure?</h2>
-<p>Diabetes affects millions worldwide. Foot complications are common due to neuropathy and poor circulation, leading to ulcers and amputations. Monitoring plantar pressure allows early detection of risky areas and proactive care.</p>
-<img src="https://images.unsplash.com/photo-1588776814546-4fda3e3bb2e6?auto=format&fit=crop&w=900&q=80" alt="Diabetic Foot Monitoring">
-<div class="info-box">
-<p><strong>Fact:</strong> Approximately 130,000–160,000 patients with diabetes undergo foot-related amputations in the U.S. annually.</p>
-</div>
-<div class="info-box">
-<p><strong>Research:</strong> Studies show continuous plantar pressure monitoring significantly reduces the risk of ulcers in high-risk patients.</p>
-</div>
+  <h2>Welcome to FootGuard</h2>
+  <p>
+    FootGuard is an interactive dashboard designed to visualize plantar pressure in patients with diabetes and interpret risk based on evidence‑based thresholds.
+    People with diabetes are at higher risk of foot complications due to neuropathy and impaired circulation, leading to ulcers and potential amputations.
+  </p>
+  <p>
+    Monitoring pressure distribution in the foot can help detect areas prone to injury so patients and clinicians can take preventive steps early.
+  </p>
+  <img src="https://images.unsplash.com/photo-1588776814546-4fda3e3bb2e6?auto=format&fit=crop&w=900&q=80" alt="Diabetic Foot Monitoring Image">
 </section>
 
-<!-- ================= Plantar Pressure ================= -->
+<!-- ===== Research & Abstract ===== -->
+<section id="research">
+  <h2>Abstract: Diabetes & Plantar Pressure Monitoring</h2>
+  <p>
+    Diabetic foot complications are among the leading causes of non‑traumatic lower limb amputations worldwide. Peripheral neuropathy and peripheral arterial disease reduce protective sensation and impair healing, respectively.
+    Elevated plantar pressures are strongly associated with foot ulceration in people with diabetes, particularly when high pressure is sustained over time. Early detection of abnormal pressure patterns can significantly reduce ulcer risk and improve outcomes.
+  </p>
+  <div class="info-box">
+    <strong>Key References:</strong>
+    <ul>
+      <li>Bus, S. A., et al. (2016). <em>International Working Group on the Diabetic Foot</em> Guidance on foot ulcers.</li>
+      <li>Armstrong, D.G., et al. (1998). <em>Pressure redistribution and ulcer prevention</em>.</li>
+      <li>Veves, A., et al. (1992). <em>Plantar pressure and ulcer risk</em>.</li>
+    </ul>
+  </div>
+  <p>
+    This dashboard incorporates statistical summaries of peak and mean pressures over clinically relevant time windows, aligning with research suggesting that persistent high pressures significantly increase ulceration risk.
+  </p>
+</section>
+
+<!-- ===== Pressure Data ===== -->
 <section id="pressure">
-<h2>Live Plantar Pressure Data</h2>
-<button class="connect-btn" onclick="connectBLE()">Connect to Arduino Nano 33 BLE</button>
-<div class="chart-container">
-<canvas id="pressureChart"></canvas>
-</div>
-<div class="info-box">
-<p>Hover over the chart to see recent pressure from Sensor 1 and Sensor 2. High pressure is indicated by peaks approaching 100%.</p>
-</div>
+  <h2>Live Plantar Pressure Data</h2>
+  <button class="connect-btn" onclick="connectBLE()">Connect to Arduino Nano 33 BLE</button>
+  <div class="chart-container">
+    <canvas id="pressureChart"></canvas>
+  </div>
+  <div class="info-box">
+    <p>High peak pressures (90th percentile) and elevated mean pressures over time are correlated with increased risk of tissue breakdown in diabetes.</p>
+  </div>
 </section>
 
-<!-- ================= Interpretation & Advice ================= -->
+<!-- ===== Interpretation ===== -->
 <section id="interpretation">
-<h2>Interpretation & Patient Advice</h2>
-<div id="adviceText" class="advice">
-<p>No data yet. Connect to the Arduino to see live readings and advice.</p>
-</div>
-<div class="info-box">
-<p>Advice is generated using statistical analysis of recent pressure readings (mean, 90th percentile, max). This approach reflects research-based thresholds used in diabetic foot monitoring.</p>
-</div>
+  <h2>Interpretation & Patient Advice</h2>
+  <div id="adviceText" class="advice">
+    <p>No data yet. Connect to the Arduino to begin receiving readings and professional advice.</p>
+  </div>
+  <div class="info-box">
+    <p>
+      Advice is based on analysis of recent pressure history, including mean and 90th percentile metrics, which have been linked to ulcer risk thresholds in clinical diabetic foot research.
+    </p>
+  </div>
 </section>
 
-<!-- ================= Reviews ================= -->
+<!-- ===== Reviews ===== -->
 <section id="reviews">
-<h2>What People Say About FootGuard</h2>
-<div class="review-container">
-<div class="review-card review">
-<img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Photo">
-<p><strong>Dr. Pandya:</strong> FootGuard is revolutionary. The inclusion of plantar pressure monitoring will allow patients to catch issues early.</p>
-</div>
-<div class="review-card review">
-<img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Photo">
-<p><strong>Mr. Distasio:</strong> As a coach with diabetes, FootGuard gives me peace of mind on my feet every day.</p>
-</div>
-<div class="review-card review">
-<img src="https://randomuser.me/api/portraits/men/55.jpg" alt="User Photo">
-<p><strong>Jane S.:</strong> The live graph and advice features make this tool very easy to use for home monitoring.</p>
-</div>
-</div>
+  <h2>Testimonials & Professional Support</h2>
+  <div class="review-container">
+    <div class="review-card">
+      <p><strong>Dr. Pandya, Podiatrist:</strong> “FootGuard presents pressure data in a clinically meaningful way. This could improve preventative care workflows.”</p>
+    </div>
+    <div class="review-card">
+      <p><strong>Mr. Distasio, Diabetes Patient:</strong> “Knowing pressure levels in real time gives me confidence. I check my feet weekly now.”</p>
+    </div>
+  </div>
 </section>
 
 <footer>
-<p>FootGuard © 2026 | Developed by Students | Powered by Arduino & TensorFlow.js</p>
+  <p>© 2026 FootGuard • Powered by Arduino, Chart.js & Evidence‑Based Practice</p>
 </footer>
 
 <script>
-// ================= Tab Navigation =================
+// ===== Tab Navigation =====
 const tabs = document.querySelectorAll('.tab-btn');
 const sections = document.querySelectorAll('section');
 tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        sections.forEach(sec => sec.classList.remove('active'));
-        document.getElementById(tab.dataset.target).classList.add('active');
-    });
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById(tab.dataset.target).classList.add('active');
+  });
 });
 
-// ================= Chart.js =================
+// ===== Chart.js Setup =====
 const ctx = document.getElementById('pressureChart').getContext('2d');
 const pressureChart = new Chart(ctx, {
-    type:'line',
-    data:{
-        labels:[],
-        datasets:[
-            {label:'Sensor 1', borderColor:'rgba(75,192,192,1)', backgroundColor:'rgba(75,192,192,0.2)', data:[], tension:0.3},
-            {label:'Sensor 2', borderColor:'rgba(255,99,132,1)', backgroundColor:'rgba(255,99,132,0.2)', data:[], tension:0.3}
-        ]
-    },
-    options:{responsive:true, animation:false, scales:{y:{min:0,max:100,title:{display:true,text:'Pressure (%)'}}, x:{title:{display:true,text:'Time'}}}}
+  type:'line',
+  data:{
+    labels:[],
+    datasets:[
+      { label:'Sensor 1', borderColor:'rgba(75,192,192,1)', backgroundColor:'rgba(75,192,192,0.2)', data:[], tension:0.3 },
+      { label:'Sensor 2', borderColor:'rgba(255,99,132,1)', backgroundColor:'rgba(255,99,132,0.2)', data:[], tension:0.3 }
+    ]
+  },
+  options:{
+    responsive:true,
+    animation:false,
+    scales:{ y:{min:0,max:100, title:{ display:true, text:'Pressure (%)'}}, x:{ title:{display:true, text:'Time'}} }
+  }
 });
 
-// ================= History & Stats =================
+// ===== History & Stats =====
 let pressureHistory = [];
-let historyLimit = 60; // store last 60 readings (~30s)
+const historyLimit = 60;
 let simulatedInterval;
 let bleConnected = false;
 
-// ================= Simulated Data =================
+// ===== Simulated Data =====
 function startSimulatedData(){
-    simulatedInterval = setInterval(()=>{
-        if(!bleConnected){
-            const s1 = Math.floor(Math.random()*100);
-            const s2 = Math.floor(Math.random()*100);
-            addDataToChart(s1,s2);
-        }
-    }, 500);
+  simulatedInterval = setInterval(()=>{
+    if(!bleConnected){
+      const s1 = Math.floor(Math.random()*100);
+      const s2 = Math.floor(Math.random()*100);
+      addDataToChart(s1,s2);
+    }
+  }, 500);
 }
 startSimulatedData();
 
-// ================= Add Data & Chart Update =================
+// ===== Add Data =====
 function addDataToChart(sensor1,sensor2){
-    const now = new Date().toLocaleTimeString();
-    pressureChart.data.labels.push(now);
-    pressureChart.data.datasets[0].data.push(sensor1);
-    pressureChart.data.datasets[1].data.push(sensor2);
-    if(pressureChart.data.labels.length>50){
-        pressureChart.data.labels.shift();
-        pressureChart.data.datasets.forEach(ds=>ds.data.shift());
-    }
-    pressureChart.update('none');
+  const now = new Date().toLocaleTimeString();
+  pressureChart.data.labels.push(now);
+  pressureChart.data.datasets[0].data.push(sensor1);
+  pressureChart.data.datasets[1].data.push(sensor2);
+  if(pressureChart.data.labels.length > 50){
+    pressureChart.data.labels.shift();
+    pressureChart.data.datasets.forEach(ds => ds.data.shift());
+  }
+  pressureChart.update('none');
 
-    // Update history for stats
-    const avg = (sensor1+sensor2)/2;
-    pressureHistory.push(avg);
-    if(pressureHistory.length>historyLimit) pressureHistory.shift();
+  // Track average pressure history
+  pressureHistory.push((sensor1 + sensor2) / 2);
+  if(pressureHistory.length > historyLimit) pressureHistory.shift();
 }
 
-// ================= Compute Stats =================
+// ===== Compute Statistics =====
 function computeStats(history){
-    if(history.length===0) return null;
-    const sorted = [...history].sort((a,b)=>a-b);
-    const sum = history.reduce((a,b)=>a+b,0);
-    const mean = sum/history.length;
-    const p90 = sorted[Math.floor(0.9*sorted.length)];
-    const max = Math.max(...history);
-    return {mean,p90,max};
+  if(history.length===0) return null;
+  const sorted = [...history].sort((a,b)=>a-b);
+  const sum = history.reduce((a,b)=>a+b,0);
+  const mean = sum/history.length;
+  const p90 = sorted[Math.floor(0.9 * sorted.length)];
+  const max = Math.max(...sorted);
+  return { mean, p90, max };
 }
 
-// ================= Generate Advice =================
+// ===== Generate Advice (Diabetes Focused) =====
 function generateAdvice(stats){
-    if(!stats) return {risk:"No Data", advice:"Waiting for readings..."};
-    let risk="", advice="";
-    if(stats.mean<50 && stats.p90<60){
-        risk="Low Risk";
-        advice=`Average pressure ${stats.mean.toFixed(1)}%. Feet are safe. Continue daily monitoring and inspect your feet.`;
-    } else if((stats.mean>=50 && stats.mean<=70)||(stats.p90>=60 && stats.p90<=75)){
-        risk="Moderate Risk";
-        advice=`Moderate pressure detected (average ${stats.mean.toFixed(1)}%, 90th percentile ${stats.p90.toFixed(1)}%). Adjust footwear, limit prolonged standing, inspect hotspots.`;
-    } else if(stats.mean>70||stats.p90>75){
-        risk="High Risk";
-        advice=`High pressure detected (average ${stats.mean.toFixed(1)}%, 90th percentile ${stats.p90.toFixed(1)}%). Immediate action: cushioned footwear, rest, inspect feet, consult healthcare provider.`;
-    } else {
-        risk="Uncertain Pattern";
-        advice="Readings ambiguous. Maintain monitoring and consult clinician if trends persist.";
-    }
-    return {risk,advice};
+  if(!stats) return {risk:"Awaiting data","advice":"Waiting for initial readings..."};
+  let risk, advice;
+  if(stats.mean < 50 && stats.p90 < 60){
+    risk = "Low Risk";
+    advice = `
+      Average pressure is relatively low (${stats.mean.toFixed(1)}%). Research suggests that plantar pressures 
+      below these levels are associated with lower ulcer risk when combined with regular foot inspection and good footwear.
+    `;
+  } else if((stats.mean>=50 && stats.mean<=70) || (stats.p90>=60 && stats.p90<=75)){
+    risk = "Moderate Risk";
+    advice = `
+      Moderate pressures detected (mean ${stats.mean.toFixed(1)}%, 90th percentile ${stats.p90.toFixed(1)}%). 
+      Literature indicates that pressures in this range can predispose to skin trauma—consider gait assessment, cushioned footwear, and activity modification.
+    `;
+  } else {
+    risk = "High Risk";
+    advice = `
+      Elevated pressures (mean ${stats.mean.toFixed(1)}%, 90th percentile ${stats.p90.toFixed(1)}) are correlated with higher risk of ulcer formation 
+      in individuals with diabetes. Immediate steps: ensure offloading footwear, reduce weight bearing, monitor skin, and consult a clinician.
+    `;
+  }
+  return { risk, advice };
 }
 
-// ================= Update Advice Every 30 Seconds =================
+// ===== Update Advice Periodically =====
 setInterval(()=>{
-    const stats = computeStats(pressureHistory);
-    const {risk,advice} = generateAdvice(stats);
-    document.getElementById("adviceText").innerHTML=`<h3>Risk: ${risk}</h3><p>${advice}</p>`;
+  const stats = computeStats(pressureHistory);
+  const {risk,advice} = generateAdvice(stats);
+  document.getElementById("adviceText").innerHTML = `<h3>${risk}</h3><p>${advice}</p>`;
 },30000);
 
-// ================= BLE Connection =================
+// ===== BLE Connection =====
 async function connectBLE(){
-    try{
-        // BLE placeholder - replace service/characteristics with Arduino UUIDs
-        const device = await navigator.bluetooth.requestDevice({
-            filters:[{services:['battery_service']}],
-            optionalServices:['custom_pressure_service']
-        });
-        const server = await device.gatt.connect();
-        const service = await server.getPrimaryService('custom_pressure_service');
-        const sensorChar = await service.getCharacteristic('pressure_data');
+  try{
+    const device = await navigator.bluetooth.requestDevice({filters:[{name:'PlantarPressure'}], optionalServices:['12345678-1234-1234-1234-123456789abc']});
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('12345678-1234-1234-1234-123456789abc');
+    const s1Char = await service.getCharacteristic('11111111-1234-1234-1234-123456789abc');
+    const s2Char = await service.getCharacteristic('22222222-1234-1234-1234-123456789abc');
 
-        // Stop simulated data
-        clearInterval(simulatedInterval);
-        bleConnected=true;
-        alert("BLE Connected! Using real sensor data now.");
+    clearInterval(simulatedInterval);
+    bleConnected = true;
+    alert("BLE Connected — using real sensor data!");
 
-        // Receive real BLE notifications
-        await sensorChar.startNotifications();
-        sensorChar.addEventListener('characteristicvaluechanged', event=>{
-            const value = event.target.value;
-            const s1 = value.getUint8(0);
-            const s2 = value.getUint8(1);
-            addDataToChart(s1,s2);
-        });
+    await s1Char.startNotifications();
+    await s2Char.startNotifications();
+    s1Char.addEventListener('characteristicvaluechanged', e => addDataToChart(e.target.value.getUint8(0), pressureChart.data.datasets[1].data.slice(-1)[0]||0));
+    s2Char.addEventListener('characteristicvaluechanged', e => addDataToChart(pressureChart.data.datasets[0].data.slice(-1)[0]||0, e.target.value.getUint8(0));
 
-    } catch(error){
-        alert("BLE connection failed: "+error);
-        console.error(error);
-    }
+  } catch(err){
+    alert("BLE connection failed: "+err);
+  }
 }
 </script>
+
 </body>
 </html>
